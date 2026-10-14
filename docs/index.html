@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASERE RENT CAR & TRANSFER / EXCURSIONS | Vehículos, Tours y Reservas</title>
+<meta name="description" content="ASERE RENT CAR & TRANSFER / EXCURSIONS: alquiler de vehículos, tours y reservas en Punta Cana y Bávaro.">
+<style id="mambo-tropical-blue">
+:root {
+ --ocean: #007fba;
+ --turquoise: #27d6d0;
+ --gold: #f5c45e;
+ --white: #ffffff;
+ --navy: #06304b;
+}
+body {
+ margin: 0;
+ font-family: Arial, Helvetica, sans-serif;
+ background: #f0fbff;
+ color: var(--navy);
+}
+header {
+ background: rgba(3, 43, 68, .88) !important;
+ border-bottom: 2px solid var(--gold);
+}
+.brand, .brand small, nav a {
+ color: var(--white) !important;
+}
+.hero {
+ min-height: 760px;
+ background:
+ linear-gradient(115deg, rgba(0,80,130,.15), rgba(0,30,55,.05)),
+ linear-gradient(135deg, #00b9d8, #007fba 48%, #06466b) !important;
+ position: relative;
+ display: flex;
+ align-items: center;
+}
+.hero:before {
+ content: "";
+ position: absolute;
+ inset: 0;
+ background: linear-gradient(
+ 90deg,
+ rgba(0,83,132,.90) 0%,
+ rgba(0,126,175,.64) 48%,
+ rgba(0,80,120,.10) 100%
+ ) !important;
+}
+.hero-content {
+ position: relative;
+ z-index: 2;
+ max-width: 650px;
+}
+.hero .eyebrow {
+ color: var(--gold) !important;
+ font-weight: bold;
+ letter-spacing: 4px;
+}
+.hero h1 {
+ color: var(--white) !important;
+ font-size: clamp(44px, 7vw, 82px);
+ line-height: 1;
+ text-shadow: 0 3px 18px #00334d;
+}
+.hero h2, .hero p {
+ color: var(--white) !important;
+ line-height: 1.7;
+}
+.hero .slogan {
+ color: var(--gold) !important;
+ font-size: 23px;
+ font-weight: bold;
+}
+.btn {
+ display: inline-block;
+ background: var(--gold) !important;
+ color: var(--navy) !important;
+ padding: 15px 24px;
+ border-radius: 30px !important;
+ font-weight: bold;
+ text-decoration: none;
+ margin: 6px;
+}
+.btn-outline {
+ background: transparent !important;
+ border: 2px solid white !important;
+ color: white !important;
+}
+section { padding: 70px 7%; }
+.section-title h2 { color: var(--ocean) !important; }
+.section-title p { color: #42657a !important; }
+.categories {
+ display: grid;
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+ gap: 22px;
+}
+.card {
+ background: white !important;
+ border: 1px solid #b8e9f3 !important;
+ border-radius: 18px !important;
+ box-shadow: 0 10px 30px rgba(0,90,130,.12);
+}
+.card h3, .card a { color: var(--ocean) !important; }
+.card p { color: #42657a !important; }
+.about { background: #dff8fc !important; }
+.about p { color: #234c61 !important; }
+.contact { background: #effcff !important; }
+.contact p { color: #234c61 !important; }
+footer {
+ background: var(--navy) !important;
+ color: white !important;
+ border-top: 3px solid var(--gold);
+}
+@media(max-width:800px) {
+ header { position: absolute; flex-direction: column; }
+ nav { justify-content: center; gap: 12px; }
+ .hero { min-height: 720px; background-position: 65% center !important; }
+ .hero:before {
+ background: linear-gradient(90deg,
+ rgba(0,83,132,.90), rgba(0,126,175,.60)) !important;
+ }
+ .categories { grid-template-columns: 1fr; }
+}
+</style>
+
+<style>
+
+/* MAMBO TROPICAL VIP - botones premium */
+.btn, button, .hero a, nav a, .card a, a.button {
+ font-size: 13px !important;
+ padding: 9px 16px !important;
+ min-height: 0 !important;
+ border-radius: 7px !important;
+ letter-spacing: 1px !important;
+ font-weight: 600 !important;
+ text-transform: uppercase;
+ transition: all .25s ease !important;
+}
+nav a {
+ padding: 8px 12px !important;
+ font-size: 11px !important;
+}
+.card a {
+ display: inline-block;
+ border: 1px solid #c9a45c !important;
+ background: #092b40 !important;
+ color: #f4d58d !important;
+ text-decoration: none !important;
+}
+.card a:hover, .btn:hover, button:hover {
+ background: #c9a45c !important;
+ color: #092b40 !important;
+ transform: translateY(-1px);
+}
+
+</style>
+<style>
+
+/* FONDO CARIBEÑO PREMIUM - MAMBO TROPICAL VIP */
+html, body {
+ min-height: 100%;
+}
+body {
+ background-color: #087e9b !important;
+ background-image:
+ linear-gradient(90deg, rgba(3,25,38,.66), rgba(3,25,38,.12)),
+ important;
+ background-position: center center !important;
+ background-size: cover !important;
+ background-attachment: fixed !important;
+ background-repeat: no-repeat !important;
+}
+/* Transparencia para que se vea la playa detrás del contenido */
+header, .hero, .hero-section, main {
+ background-color: transparent !important;
+ background-image: none !important;
+}
+/* Botones pequeños, elegantes y dorados */
+.btn, button, nav a, .hero a, .card a, a.button {
+ font-size: 12px !important;
+ padding: 9px 15px !important;
+ border: 1px solid #d6b56d !important;
+ border-radius: 6px !important;
+ letter-spacing: 1px !important;
+ font-weight: 600 !important;
+}
+
+</style>
+<style>
+
+/* Vehículo decorativo sobre el fondo tropical */
+body {
+ position: relative;
+ background-color: #087e9b !important;
+  background-image: none !important;important;
+ background-position: center center !important;
+ background-size: cover !important;
+ background-attachment: fixed !important;
+ background-repeat: no-repeat !important;
+}
+#carro-mambo {
+ position: fixed;
+ right: 3%;
+ bottom: 3%;
+ width: min(40vw, 470px);
+ height: auto;
+ z-index: 0;
+ pointer-events: none;
+ filter: drop-shadow(0 14px 18px rgba(0,0,0,.45));
+ object-fit: contain;
+}
+body > *:not(#carro-mambo) {
+ position: relative;
+ z-index: 1;
+}
+@media (max-width: 700px) {
+ #carro-mambo { width: 62vw; right: 1%; bottom: 1%; opacity: .9; }
+}
+
+
+</style>
+<style>
+
+/* Tipografía elegante para el inicio */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+.hero h1,
+.hero h2,
+.hero-section h1,
+.hero-section h2,
+h1 {
+ font-family: 'Cormorant Garamond', Georgia, serif !important;
+ font-weight: 600 !important;
+ letter-spacing: 2px !important;
+ line-height: 1.08 !important;
+ color: #f5dfaa !important;
+ text-shadow: 0 3px 12px rgba(0,0,0,.5) !important;
+}
+
+.hero p,
+.hero-section p {
+ font-family: 'Montserrat', Arial, sans-serif !important;
+ font-weight: 400 !important;
+ letter-spacing: .6px !important;
+ line-height: 1.7 !important;
+}
+
+nav, nav a, .btn, button {
+ font-family: 'Montserrat', Arial, sans-serif !important;
+ letter-spacing: 1px !important;
+}
+
+</style>
+</head>
+
+<style id="asere-portada-final">
+.asere-portada {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  padding: 115px 35px 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(rgba(3, 25, 38, .20), rgba(3, 25, 38, .30)),
+    url('https://cdn.sanity.io/images/lxncf579/production/9ec7fb1b798a45aa14ea82746a447bc45c95038b-1672x941.png?auto=format&w=1200')
+    center center / cover no-repeat !important;
+}
+
+.asere-contenido {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  align-items: center;
+  gap: 35px;
+  position: relative;
+  z-index: 2;
+}
+
+.asere-portada::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 92px;
+  background: rgba(247, 240, 222, .96);
+  border-bottom: 3px solid #c8a65c;
+}
+
+.asere-nombre {
+  position: absolute;
+  top: -105px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 14px 8px;
+  box-sizing: border-box;
+  text-align: center;
+  color: #101820 !important;
+  -webkit-text-stroke: 1px #d6b45e;
+  font-family: "Palatino Linotype", Georgia, serif !important;
+  font-size: clamp(25px, 4vw, 48px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1.15;
+  text-shadow: 1px 1px 0 #f3dfaa, 0 2px 8px rgba(0,0,0,.15);
+}
+.asere-eslogan {
+  margin: 0 0 22px;
+  color: #fff2cf !important;
+  font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif !important;
+  font-size: clamp(27px, 3.5vw, 42px);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 1px;
+  line-height: 1.35;
+  text-shadow: 0 3px 12px rgba(0,0,0,.85);
+}
+
+.asere-frase {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  width: min(850px, calc(100vw - 150px));
+  box-sizing: border-box;
+  margin: 0;
+  padding-top: 9px;
+  border-top: 1px solid rgba(222, 190, 119, .8);
+  color: #fff0c9 !important;
+  font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif !important;
+  font-size: clamp(15px, 1.5vw, 22px);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.5;
+  text-align: right;
+  text-shadow: 0 2px 9px rgba(0,0,0,.95);
+  z-index: 15;
+}
+
+.asere-qr {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  right: auto;
+  top: auto;
+  z-index: 9999;
+  display: inline-block;
+  background: #fff;
+  padding: 5px;
+  border: 1px solid #d3b46b;
+  border-radius: 6px;
+  margin: 0;
+  box-shadow: 0 3px 12px rgba(0,0,0,.3);
+}
+
+.asere-qr img {
+  display: block;
+  width: 58px;
+  height: 58px;
+}
+
+.asere-qr p {
+  color: #172b36 !important;
+  font-size: 8px;
+  font-weight: bold;
+  margin: 3px 0 0;
+}
+
+.asere-boton {
+  display: block;
+  width: 165px;
+  box-sizing: border-box;
+  padding: 12px 8px !important;
+  border: 1px solid #d9b967 !important;
+  border-radius: 5px !important;
+  background: rgba(7, 32, 45, .94) !important;
+  color: #f7e5b5 !important;
+  font-family: "Palatino Linotype", Georgia, serif !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  letter-spacing: 1.2px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 3px 9px rgba(0,0,0,.25);
+}
+
+.asere-boton:hover {
+  background: #e5c779 !important;
+  color: #102631 !important;
+}
+
+@media (max-width: 650px) {
+  .asere-portada {
+    min-height: 100vh;
+    padding: 115px 18px 100px;
+  }
+
+  .asere-portada::before {
+    height: 82px;
+  }
+
+  .asere-nombre {
+    top: -250px;
+    font-size: 30px;
+    letter-spacing: 2px;
+    padding: 20px 10px;
+  }
+
+  .asere-contenido {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 185px;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.asere-botones {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 11px;
+  margin: 0;
+}
+
+.asere-boton {
+  display: block;
+  width: 155px;
+  box-sizing: border-box;
+  padding: 12px 8px !important;
+  border: 1px solid #d9b967 !important;
+  border-radius: 5px !important;
+  background: rgba(7, 32, 45, .94) !important;
+  color: #f7e5b5 !important;
+  font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  letter-spacing: 1px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 9px rgba(0,0,0,.25);
+}
+
+</style>
+
+<main>
+  <section class="asere-portada" id="inicio">
+    <div class="asere-contenido">
+      <h1 class="asere-nombre">ASERE RENT CAR · TOURS · TRANSFER</h1>
+ </p>
+
+     <p class="asere-frase">Tu destino, tu ritmo, tu libertad. Viaja con confianza: tu seguridad es nuestra garantía.</p>
+
+      
+<div class="asere-qr">
+  <img
+    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&amp;data=https%3A%2F%2Fwa.me%2F18293517721"
+    alt="Código QR para contactar a ASERE por WhatsApp">
+  <p>ESCANEA Y CONTÁCTANOS</p>
+</div>
+
+
+      <div class="asere-botones">
+        <button type="button" class="asere-boton js-solicitud"
+          data-servicio="Renta de vehículos">
+          RENT CAR
+        </button>
+
+        <button type="button" class="asere-boton js-solicitud"
+          data-servicio="Tours">
+          TOURS
+        </button>
+
+        <button type="button" class="asere-boton js-solicitud"
+          data-servicio="Transfer">
+          TRANSFER
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+<footer>© © 2026 ASERE RENT CAR · TOURS · TRANSFER Todos los derechos reservados.</footer>
+
+
+
+
+<style>
+.mambo-categorias{margin:20px 0}
+.mambo-categorias summary{cursor:pointer;font-weight:bold;padding:16px;border:1px solid #d4b36a;border-radius:12px}
+.mambo-opciones{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+.mambo-opciones button{cursor:pointer;border:0;border-radius:10px;padding:14px 22px;background:#087f9c;color:white;font-weight:bold}
+#mambo-solicitud-modal{display:none;position:fixed;inset:0;z-index:99999;background:#0009;overflow:auto;padding:18px}
+#mambo-solicitud-modal.abierto{display:block}
+#mambo-solicitud-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.75);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#mambo-solicitud-modal.abierto {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#mambo-solicitud-panel {
+  position: relative;
+  display: block;
+  max-width: 600px;
+  margin: 25px auto;
+  background: white;
+  color: #172b36;
+  padding: 22px;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+#mambo-solicitud-panel{
+  position:relative;
+  max-width:600px;
+  margin:25px auto;
+  background:white;
+  color:#172b36;
+  padding:22px;
+  border-radius:16px;
+  box-sizing:border-box;
+}
+#mambo-solicitud-panel{max-width:600px;margin:25px auto;background:white;color:#172b36;padding:22px;border-radius:16px}
+#mambo-solicitud-panel h2{margin-top:0}
+#mambo-formulario{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#mambo-formulario label{display:flex;flex-direction:column;gap:5px;font-size:14px}
+#mambo-formulario input,#mambo-formulario select,#mambo-formulario textarea{box-sizing:border-box;width:100%;padding:11px;border:1px solid #bbb;border-radius:8px;font:inherit}
+#mambo-formulario .ancho{grid-column:1/-1}
+#mambo-formulario .acciones{display:flex;gap:10px;flex-wrap:wrap}
+#mambo-formulario button{padding:12px 16px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
+#mambo-enviar{background:#13864b;color:white}
+#mambo-cerrar,#mambo-cancelar{background:#e8edf0;color:#172b36}
+@media(max-width:480px){#mambo-formulario{grid-template-columns:1fr}#mambo-formulario .ancho{grid-column:auto}}
+</style>
+<div id="mambo-solicitud-modal" role="dialog" aria-modal="true" aria-labelledby="mambo-titulo">
+  <div id="mambo-solicitud-panel">
+    <button type="button" id="mambo-cerrar" style="float:right">Cerrar ✕</button>
+    <h2 id="mambo-titulo">Solicitar reserva</h2>
+    <p>Completa los datos y continúa por WhatsApp.</p>
+    <form id="mambo-formulario">
+  <input id="mambo-servicio" name="servicio" type="hidden" value="">
+  <input id="mambo-categoria" name="categoria" type="hidden" value="">
+  <div id="asere-campos-dinamicos"></div>
+  <div class="acciones ancho" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px"><button type="button" id="asere-volver-tours" style="display:none">← Volver a tours</button>
+    <button type="submit" id="mambo-enviar">Continuar por WhatsApp</button>
+    <button type="button" id="mambo-cancelar">Cancelar</button>
+  </div>
+</form>
+  </div>
+</div>
+
+<div id="asere-categorias-modal" style="display:none;position:fixed;inset:0;z-index:1000000;background:rgba(0,0,0,.8);padding:20px;overflow:auto;box-sizing:border-box">
+  <div style="max-width:650px;margin:40px auto;background:#fff;color:#222;border-radius:16px;padding:24px">
+    <button type="button" data-asere-volver-inicio style="padding:10px;margin:0 8px 12px 0">← Volver al inicio</button><button type="button" data-cerrar-asere="categorias" style="float:right;padding:10px">Cerrar ✕</button>
+    <h2>RENT CAR</h2>
+    <p>Selecciona una categoría de vehículos.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+      <button type="button" class="asere-categoria" data-categoria="Sedán" style="padding:24px;border-radius:12px;cursor:pointer">SEDÁN</button>
+      <button type="button" class="asere-categoria" data-categoria="SUV" style="padding:24px;border-radius:12px;cursor:pointer">SUV</button>
+      <button type="button" class="asere-categoria" data-categoria="Especiales" style="padding:24px;border-radius:12px;cursor:pointer">ESPECIALES</button>
+    </div>
+  </div>
+</div>
+
+<div id="asere-vehiculos-modal" style="display:none;position:fixed;inset:0;z-index:1000001;background:rgba(0,0,0,.8);padding:20px;overflow:auto;box-sizing:border-box">
+  <div style="max-width:650px;margin:40px auto;background:#fff;color:#222;border-radius:16px;padding:24px">
+    <button type="button" data-asere-volver-categorias style="padding:10px;margin:0 8px 12px 0">← Volver a categorías</button><button type="button" data-cerrar-asere="vehiculos" style="float:right;padding:10px">Cerrar ✕</button>
+    <h2>Vehículos — <span id="asere-vehiculos-categoria"></span></h2>
+    <div style="border:1px solid #ddd;border-radius:12px;padding:20px;margin-top:16px">
+      <p><strong>Catálogo de vehículos</strong></p>
+      <p>Aquí añadiremos las fotos, el modelo, el año y la disponibilidad real.</p>
+      <button type="button" class="asere-seleccionar-vehiculo" style="padding:12px 18px;border-radius:8px;cursor:pointer">Continuar al formulario</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const modal = document.getElementById('mambo-solicitud-modal');
+  const form = document.getElementById('mambo-formulario');
+  if (!modal || !form) return;
+
+  // ASERE_PANEL_LOCAL_V1: configuración local del sitio.
+  const ASERE_ADMIN_KEY = 'asere_site_config_v1';
+  const asereAdminDefaults = {
+    precios: { sedan: 50, suv: 80, deposito: 200 },
+    tourPrices: {},
+    tours: null
+  };
+  let asereAdminConfig = asereAdminDefaults;
+  try {
+    const guardada = JSON.parse(localStorage.getItem(ASERE_ADMIN_KEY) || 'null');
+    if (guardada && typeof guardada === 'object') {
+      asereAdminConfig = {
+        ...asereAdminDefaults,
+        ...guardada,
+        precios: { ...asereAdminDefaults.precios, ...(guardada.precios || {}) },
+        tourPrices: guardada.tourPrices || {},
+        tours: Array.isArray(guardada.tours) ? guardada.tours : null
+      };
+    }
+  } catch (error) {
+    console.warn('No se pudo leer la configuración local de ASERE.', error);
+  }
+
+  const panel = document.getElementById('mambo-solicitud-panel');
+  const contenedorCampos = document.getElementById('asere-campos-dinamicos');
+
+  if (panel) {
+    panel.style.width = '100%';
+    panel.style.maxWidth = '980px';
+    panel.style.boxSizing = 'border-box';
+    panel.style.margin = '0 auto';
+    panel.style.padding = 'clamp(20px, 4vw, 38px)';
+    panel.style.borderRadius = '18px';
+  }
+  modal.style.padding = '12px';
+  modal.style.overflowY = 'auto';
+
+  const estiloCampos = document.createElement('style');
+  estiloCampos.textContent = `
+    #asere-campos-dinamicos {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+    #asere-campos-dinamicos label {
+      display:flex;flex-direction:column;gap:7px;
+      font-size:15px;font-weight:600;min-width:0;
+    }
+    #asere-campos-dinamicos input,
+    #asere-campos-dinamicos select,
+    #asere-campos-dinamicos textarea {
+      box-sizing:border-box;width:100%;min-height:48px;
+      padding:12px;border:1px solid #bbb;border-radius:9px;
+      font:inherit;background:white;color:#222;
+    }
+    #asere-campos-dinamicos .ancho {grid-column:1/-1}
+    #asere-campos-dinamicos .grupo-licencia {
+      grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;
+      border:1px solid #ddd;border-radius:12px;padding:16px;
+    }
+    #mambo-titulo {font-size:clamp(25px,3vw,34px)}
+    #mambo-formulario button {min-height:48px;font-size:16px}
+    @media(max-width:600px) {
+      #asere-campos-dinamicos {grid-template-columns:1fr;gap:13px}
+      #asere-campos-dinamicos .ancho {grid-column:auto}
+      #asere-campos-dinamicos .grupo-licencia {grid-template-columns:1fr}
+      #mambo-solicitud-panel {padding:18px !important}
+    }
+  `;
+  document.head.appendChild(estiloCampos);
+
+
+  function inicializarPreciosRenta(categoria) {
+    const modalidad = document.getElementById('asere-modalidad');
+    const tipoChofer = document.getElementById('asere-tipo-chofer');
+    const cantidad = document.getElementById('asere-cantidad-chofer');
+    const cantidadWrap = document.getElementById('asere-cantidad-chofer-wrap');
+    const inicio = form.querySelector('[name="fecha"]');
+    const horaInicio = form.querySelector('[name="hora"]');
+    const fin = form.querySelector('[name="fechaFin"]');
+    const horaFin = form.querySelector('[name="horaFin"]');
+
+    const tarifaTexto = document.getElementById('asere-tarifa-vehiculo');
+    const duracionTexto = document.getElementById('asere-duracion-renta');
+    const subtotalVehiculoTexto = document.getElementById('asere-subtotal-vehiculo');
+    const subtotalChoferTexto = document.getElementById('asere-subtotal-chofer');
+    const totalTexto = document.getElementById('asere-total-reserva');
+
+    const valorVehiculo = document.getElementById('asere-valor-subtotal-vehiculo');
+    const valorChofer = document.getElementById('asere-valor-subtotal-chofer');
+    const valorTotal = document.getElementById('asere-valor-total-reserva');
+
+    const categoriaTexto = (categoria || '').toLowerCase();
+    const especial = categoriaTexto.includes('especial');
+    const suv = categoriaTexto.includes('suv');
+    const tarifa = especial ? null : Number(suv ? asereAdminConfig.precios.suv : asereAdminConfig.precios.sedan);
+    const dinero = n => 'US$' + n.toFixed(2);
+
+    tarifaTexto.textContent = especial
+      ? 'Por confirmar'
+      : dinero(tarifa) + ' por día';
+
+    function calcular() {
+      const conChofer = modalidad.value === 'chofer';
+      cantidadWrap.hidden = !conChofer;
+      cantidad.required = conChofer;
+
+      let dias = 0;
+      if (inicio.value && horaInicio.value && fin.value && horaFin.value) {
+        const fechaInicial = new Date(inicio.value + 'T' + horaInicio.value);
+        const fechaFinal = new Date(fin.value + 'T' + horaFin.value);
+        const diferencia = fechaFinal.getTime() - fechaInicial.getTime();
+
+        if (diferencia > 0) {
+          dias = Math.max(1, Math.ceil(diferencia / 86400000));
+        }
+      }
+
+      duracionTexto.textContent = dias
+        ? dias + (dias === 1 ? ' día' : ' días')
+        : 'Revisa las fechas y horas';
+
+      let subtotalVehiculo = null;
+      if (especial) {
+        subtotalVehiculoTexto.textContent = 'Por confirmar';
+        valorVehiculo.value = 'Por confirmar';
+      } else if (dias) {
+        subtotalVehiculo = dias * tarifa;
+        subtotalVehiculoTexto.textContent = dinero(subtotalVehiculo);
+        valorVehiculo.value = dinero(subtotalVehiculo);
+      } else {
+        subtotalVehiculoTexto.textContent = '—';
+        valorVehiculo.value = '';
+      }
+
+      let subtotalChofer = 0;
+      if (conChofer) {
+        const unidades = Math.max(1, Number(cantidad.value) || 1);
+        const tarifaChofer = tipoChofer.value === 'dia' ? 80 : 10;
+        subtotalChofer = unidades * tarifaChofer;
+        subtotalChoferTexto.textContent =
+          dinero(subtotalChofer) +
+          (tipoChofer.value === 'dia' ? ' (' + unidades + ' día(s))' : ' (' + unidades + ' hora(s))');
+      } else {
+        subtotalChoferTexto.textContent = 'US$0.00';
+      }
+      valorChofer.value = dinero(subtotalChofer);
+
+      if (especial) {
+        totalTexto.textContent = 'Por confirmar + depósito reembolsable US$200';
+        valorTotal.value = 'Por confirmar; incluye depósito reembolsable US$200';
+      } else if (dias) {
+        const deposito = Number(asereAdminConfig.precios.deposito || 0);
+        totalTexto.textContent = dinero(subtotalVehiculo + subtotalChofer + deposito);
+        valorTotal.value = dinero(subtotalVehiculo + subtotalChofer + deposito);
+      } else {
+        totalTexto.textContent = 'Completa las fechas para calcular';
+        valorTotal.value = '';
+      }
+    }
+
+    [inicio, horaInicio, fin, horaFin, modalidad, tipoChofer, cantidad].forEach(el => {
+      el.addEventListener('input', calcular);
+      el.addEventListener('change', calcular);
+    });
+
+    inicio.addEventListener('change', () => {
+      fin.min = inicio.value;
+      if (fin.value && fin.value < inicio.value) fin.value = '';
+      calcular();
+    });
+
+    calcular();
+  }
+
+  // Tarifas pendientes: se configurarán desde el panel administrativo.
+  const preciosToursAsere = Object.assign(Object.create(null), asereAdminConfig.tourPrices || {});
+
+  function renderizarCampos(servicio, categoria) {
+    const tipo = (servicio || '').toLowerCase();
+    const renta = tipo.includes('renta') || tipo.includes('vehículo');
+    const tours = tipo.includes('tour') || tipo.includes('excurs');
+    const campo = (titulo, nombre, tipo='text', extra='') =>
+      `<label>${titulo}<input name="${nombre}" type="${tipo}" ${extra} required></label>`;
+    const pasajeros = `
+      <label>¿Cuántas personas viajan?
+        <select name="pasajeros" required>
+          <option value="1">1 persona</option><option value="2">2 personas</option>
+          <option value="3">3 personas</option><option value="4">4 personas</option>
+          <option value="5">5 personas</option><option value="6">6 personas</option>
+          <option value="7+">7 o más</option>
+        </select>
+      </label>`;
+    let html = '';
+
+    if (renta) {
+      html = `
+        <label class="ancho">¿Cómo deseas utilizar el vehículo?
+          <select name="modalidad" id="asere-modalidad" required>
+            <option value="propio">Conduciré yo</option>
+            <option value="chofer">Quiero vehículo con chofer</option>
+          </select>
+        </label>
+        ${campo('Vehículo seleccionado','vehiculo','text','readonly aria-readonly="true" placeholder="Categoría seleccionada"')}
+        ${campo('Fecha de recogida','fecha','date')}
+        ${campo('Hora de recogida','hora','time')}
+        ${campo('Fecha de devolución','fechaFin','date')}
+        ${campo('Hora de devolución','horaFin','time')}
+        <label class="ancho">Tipo de servicio de chofer
+          <select name="tipoChofer" id="asere-tipo-chofer">
+            <option value="hora">Por hora — US$10/hora</option>
+            <option value="dia">Día completo — US$80/día</option>
+          </select>
+        </label>
+        <label class="ancho" id="asere-cantidad-chofer-wrap" hidden>
+          Cantidad de horas o días de chofer
+          <input name="cantidadChofer" id="asere-cantidad-chofer" type="number" min="1" max="24" value="1">
+        </label>
+
+        <label class="ancho">Lugar de recogida
+          <input name="recogida" placeholder="Hotel, aeropuerto o dirección" required>
+        </label>
+        <label class="ancho">Lugar de devolución
+          <input name="destino" placeholder="Indica dónde devolverás el vehículo" required>
+        </label>
+        ${campo('Nombre completo','nombre','text','autocomplete="name"')}
+        ${campo('Teléfono','telefono','tel','autocomplete="tel"')}
+        <div class="grupo-licencia" id="asere-grupo-licencia">
+          ${campo('Número de cédula','cedula','text','placeholder="Número de cédula"')}
+          ${campo('Número de licencia','licencia','text','placeholder="Número de licencia"')}
+          <label class="ancho">Foto frontal de la licencia
+            <input type="file" name="fotoLicencia" accept="image/*" capture="environment" required>
+            <small>Si eliges conducir, selecciona una foto clara. Tendrás que adjuntarla manualmente en WhatsApp.</small>
+          </label>
+        </div>
+        <label class="ancho">Comentarios adicionales
+          <textarea name="detalles" rows="3" placeholder="Información adicional"></textarea>
+        </label>
+        <div class="ancho" id="asere-resumen-precios" style="padding:16px;margin:12px 0;border:1px solid #c8a45d;border-radius:12px;background:#fffaf0;color:#222">
+          <h3 style="margin-top:0">Resumen de precios</h3>
+          <p>Tarifa del vehículo: <strong id="asere-tarifa-vehiculo">Calculando categoría…</strong></p>
+          <p>Duración de la renta: <strong id="asere-duracion-renta">Selecciona las fechas y horas</strong></p>
+          <p>Subtotal del vehículo: <strong id="asere-subtotal-vehiculo">—</strong></p>
+          <p>Subtotal del chofer: <strong id="asere-subtotal-chofer">US$0.00</strong></p>
+          <p>Depósito reembolsable: <strong>US$200.00</strong></p>
+          <p style="font-size:1.15em"><strong>Total a pagar al retirar: <span id="asere-total-reserva">Completa las fechas</span></strong></p>
+          <small>El depósito de US$200 se devuelve al entregar el vehículo, según las condiciones acordadas.</small>
+          <small>Los vehículos especiales tienen precio por confirmar. El total es una estimación según las opciones seleccionadas.</small>
+          <input type="hidden" name="subtotalVehiculo" id="asere-valor-subtotal-vehiculo">
+          <input type="hidden" name="subtotalChofer" id="asere-valor-subtotal-chofer" value="US$0.00">
+          <input type="hidden" name="depositoReembolsable" value="US$200.00 (reembolsable)">
+          <input type="hidden" name="totalReserva" id="asere-valor-total-reserva">
+        </div>
+      `;
+     } else if (tours) {
+      html = `
+        ${campo('Excursión seleccionada','excursion','text','readonly aria-readonly="true" placeholder="Selecciona una excursión del catálogo"')}
+        ${campo('Fecha','fecha','date')}
+        ${campo('Hora preferida','hora','time')}
+        <label>Lugar de recogida
+          <input name="recogida" placeholder="Hotel o dirección" required>
+        </label>
+        <label> Cantidad de adultos
+          <input name="adultos" type="number" min="1" max="99" value="1" required>
+        </label>
+        <label>Cantidad de niños
+          <input name="ninos" type="number" min="0" max="99" value="0" required>
+        </label>
+        <div class="ancho" id="asere-resumen-tours"
+             style="padding:16px;margin:12px 0;border:1px solid #c8a45d;border-radius:12px;background:#fffaf0;color:#222">
+          <h3 style="margin-top:0">Resumen de la excursión</h3>
+          <p>Precio por adulto: <strong id="asere-precio-adulto">Pendiente de configurar</strong></p>
+          <p>Precio por niño: <strong id="asere-precio-nino">Pendiente de configurar</strong></p>
+          <p>Total de adultos: <strong id="asere-subtotal-adultos">Pendiente</strong></p>
+          <p>Total de niños: <strong id="asere-subtotal-ninos">Pendiente</strong></p>
+          <p style="font-size:1.15em"><strong>Total estimado: <span id="asere-total-excursion">Pendiente de configurar</span></strong></p>
+          <small>El total se calculará cuando estén configurados los precios de esta excursión.</small>
+          <input type="hidden" name="precioAdulto">
+          <input type="hidden" name="precioNino">
+          <input type="hidden" name="totalExcursion">
+        </div>
+        ${campo('Nombre completo','nombre','text','autocomplete="name"')}
+        ${campo('Teléfono','telefono','tel','autocomplete="tel"')}
+        <label class="ancho">Comentarios
+          <textarea name="detalles" rows="3" placeholder="Edades de los niños u otros detalles"></textarea>
+        </label>`;
+    } else {
+      html = `
+        ${campo('Lugar de recogida','recogida','text','placeholder="Hotel, aeropuerto o dirección"')}
+        ${campo('Destino','destino','text','placeholder="Dirección o destino"')}
+        ${campo('Fecha del traslado','fecha','date')}
+        ${campo('Hora de recogida','hora','time')}
+        ${pasajeros}
+        ${campo('Número de vuelo (si aplica)','vuelo','text','placeholder="Número de vuelo"')}
+        ${campo('Nombre completo','nombre','text','autocomplete="name"')}
+        ${campo('Teléfono','telefono','tel','autocomplete="tel"')}
+        <label class="ancho">Comentarios
+          <textarea name="detalles" rows="3" placeholder="Equipaje u otras necesidades"></textarea>
+        </label>`;
+    }
+
+    contenedorCampos.innerHTML = html;
+
+    if (tours) {
+      const excursion = contenedorCampos.querySelector('[name="excursion"]');
+      const adultos = contenedorCampos.querySelector('[name="adultos"]');
+      const ninos = contenedorCampos.querySelector('[name="ninos"]');
+      const formatoDinero = valor => 'US$' + valor.toFixed(2);
+
+      function actualizarResumenTours() {
+        const nombre = excursion.value.trim();
+        const precios = preciosToursAsere[nombre] || {};
+        const precioAdulto = precios.adulto;
+        const precioNino = precios.nino;
+        const adultoValido = precioAdulto !== null && precioAdulto !== undefined &&
+          precioAdulto !== '' && Number.isFinite(Number(precioAdulto)) && Number(precioAdulto) >= 0;
+        const ninoValido = precioNino !== null && precioNino !== undefined &&
+          precioNino !== '' && Number.isFinite(Number(precioNino)) && Number(precioNino) >= 0;
+
+        const totalAdultos = Number(adultos.value || 0);
+        const totalNinos = Number(ninos.value || 0);
+        const mostrarAdulto = adultoValido ? Number(precioAdulto) : null;
+        const mostrarNino = ninoValido ? Number(precioNino) : null;
+
+        contenedorCampos.querySelector('#asere-precio-adulto').textContent =
+          adultoValido ? formatoDinero(mostrarAdulto) : 'Pendiente de configurar';
+        contenedorCampos.querySelector('#asere-precio-nino').textContent =
+          ninoValido ? formatoDinero(mostrarNino) : 'Pendiente de configurar';
+
+        contenedorCampos.querySelector('#asere-subtotal-adultos').textContent =
+          adultoValido ? formatoDinero(totalAdultos * mostrarAdulto) : 'Pendiente';
+        contenedorCampos.querySelector('#asere-subtotal-ninos').textContent =
+          ninoValido ? formatoDinero(totalNinos * mostrarNino) : 'Pendiente';
+
+        const precioAdultoInput = contenedorCampos.querySelector('[name="precioAdulto"]');
+        const precioNinoInput = contenedorCampos.querySelector('[name="precioNino"]');
+        const totalInput = contenedorCampos.querySelector('[name="totalExcursion"]');
+
+        precioAdultoInput.value = adultoValido ? formatoDinero(mostrarAdulto) : '';
+        precioNinoInput.value = ninoValido ? formatoDinero(mostrarNino) : '';
+
+        const preciosListos = adultoValido && ninoValido && nombre;
+        const total = totalAdultos * mostrarAdulto + totalNinos * mostrarNino;
+        contenedorCampos.querySelector('#asere-total-excursion').textContent =
+          preciosListos ? formatoDinero(total) : 'Pendiente de configurar';
+        totalInput.value = preciosListos ? formatoDinero(total) : '';
+      }
+
+      [excursion, adultos, ninos].forEach(elemento => {
+        elemento.addEventListener('input', actualizarResumenTours);
+        elemento.addEventListener('change', actualizarResumenTours);
+      });
+      actualizarResumenTours();
+    }
+
+
+    if (renta) {
+      const modalidad = document.getElementById('asere-modalidad');
+      const grupo = document.getElementById('asere-grupo-licencia');
+      function actualizarLicencia() {
+        const propio = modalidad.value === 'propio';
+        grupo.hidden = !propio;
+        grupo.querySelectorAll('input[required]').forEach(el => {
+          el.required = propio;
+        });
+      }
+      modalidad.addEventListener('change', actualizarLicencia);
+      actualizarLicencia();
+      inicializarPreciosRenta(categoria);
+    }
+
+    const subtitulo = panel && panel.querySelector('p');
+    if (subtitulo) {
+      subtitulo.textContent = renta
+        ? 'Completa los datos de tu renta. Elige si conducirás o prefieres chofer.'
+        : tours ? 'Cuéntanos qué excursión deseas reservar.'
+        : 'Completa los datos de tu traslado.';
+    }
+  }
+
+  let categoriaAsereSeleccionada = '';
+
+  const categoriasAsere = document.getElementById('asere-categorias-modal');
+  const vehiculosAsere = document.getElementById('asere-vehiculos-modal');
+
+  document.addEventListener('click', function(e) {
+    const cerrarAsere = e.target.closest('[data-cerrar-asere]');
+    if (cerrarAsere) {
+      const destino = cerrarAsere.dataset.cerrarAsere === 'categorias'
+        ? categoriasAsere : vehiculosAsere;
+      destino.style.display = 'none';
+      return;
+    }
+
+    if (e.target === categoriasAsere) {
+      categoriasAsere.style.display = 'none';
+      return;
+    }
+    if (e.target === vehiculosAsere) {
+      vehiculosAsere.style.display = 'none';
+      return;
+    }
+
+    const categoriaBtn = e.target.closest('.asere-categoria');
+    if (categoriaBtn) {
+      categoriaAsereSeleccionada = categoriaBtn.dataset.categoria;
+      document.getElementById('asere-vehiculos-categoria').textContent =
+        categoriaAsereSeleccionada;
+      categoriasAsere.style.display = 'none';
+      vehiculosAsere.style.display = 'block';
+      return;
+    }
+
+    const seleccionarVehiculo = e.target.closest('.asere-seleccionar-vehiculo');
+    if (seleccionarVehiculo) {
+      vehiculosAsere.style.display = 'none';
+      abrir('Renta de vehículos', categoriaAsereSeleccionada);
+      const campoVehiculo = form.querySelector('[name="vehiculo"]');
+      if (campoVehiculo) {
+        campoVehiculo.value = categoriaAsereSeleccionada + ' — modelo por seleccionar';
+        campoVehiculo.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      categoriasAsere.style.display = 'none';
+      vehiculosAsere.style.display = 'none';
+    }
+  });
+
+
+  function abrir(servicio, categoria) {
+    form.reset();
+    document.getElementById('mambo-servicio').value = servicio || 'Consulta general';
+    document.getElementById('mambo-categoria').value = categoria || '';
+    renderizarCampos(servicio || 'Consulta general', categoria || '');
+    const volverTours = document.getElementById('asere-volver-tours');
+    if (volverTours) {
+      volverTours.style.display =
+        String(servicio || '').toLowerCase().includes('tour') ? 'inline-block' : 'none';
+    }
+   const pasajeros = form.querySelector('[name="pasajeros"]');
+if (pasajeros) pasajeros.value = '1';
+    modal.style.display = 'block';
+    modal.classList.add('abierto');
+    modal.style.position = 'fixed';
+modal.style.inset = '0';
+modal.style.zIndex = '999999';
+modal.style.overflowY = 'auto';
+modal.style.background = 'rgba(0,0,0,0.75)';
+modal.style.padding = '20px';
+modal.style.boxSizing = 'border-box';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    document.body.style.overflow = 'hidden';
+  }
+ function cerrar() {
+  modal.classList.remove('abierto');
+  modal.style.display = 'none';
+  modal.style.visibility = 'hidden';
+  modal.style.opacity = '0';
+  document.body.style.overflow = '';
+}
+
+
+  // Catálogo visual de excursiones; las fotos son provisionales.
+  let excursionesAsere = [
+    ['Isla Saona VIP','https://images.unsplash.com/photo-1519046904884-53103b34b206'],
+    ['Isla Saona Normal','https://images.unsplash.com/photo-1500375592092-40eb2168fd21'],
+    ['12 Zipline','https://images.unsplash.com/photo-1551632811-561732d1e306'],
+    ['Tour por Santo Domingo','https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86'],
+    ['Samaná','https://images.unsplash.com/photo-1500530855697-b586d89ba3ee'],
+    ['Buggy','https://images.unsplash.com/photo-1464822759023-fed622ff2c3b'],
+    ['Monkeyland','https://images.unsplash.com/photo-1540573133985-87b6da6d54a9'],
+    ['Parasailing','https://images.unsplash.com/photo-1506953823976-52e1fdc0149a'],
+    ['Baribó','https://images.unsplash.com/photo-1518837695005-2083093ee35b'],
+    ['Skate Park','https://images.unsplash.com/photo-1520045892732-304bc3ac5d8e'],
+    ['Coco Bongo','https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3'],
+    ['Hacienda Park','https://images.unsplash.com/photo-1472396961693-142e6e269027'],
+    ['Quavado','https://images.unsplash.com/photo-1500534623283-312aade485b7'],
+    ['Sea Fish','https://images.unsplash.com/photo-1544551763-46a013bb70d5'],
+    ['El Dorado Water Park','https://images.unsplash.com/photo-1530549387789-4c1017266635'],
+    ['Aventura en el Cicc River','https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2'],
+    ['Adventure Park','https://images.unsplash.com/photo-1473448912268-2022ce9509d8']
+  ];
+
+
+  // ASERE_PANEL_LOCAL_V1: tours configurables y panel integrado.
+  if (Array.isArray(asereAdminConfig.tours)) {
+    excursionesAsere = asereAdminConfig.tours
+      .filter(t => t && t.nombre)
+      .map(t => [String(t.nombre), String(t.foto || '')]);
+    asereAdminConfig.tours.forEach(t => {
+      preciosToursAsere[t.nombre] = {
+        adulto: t.adulto === '' ? null : t.adulto,
+        nino: t.nino === '' ? null : t.nino
+      };
+    });
+  }
+
+  const catalogoTours = document.createElement('section');
+  catalogoTours.id = 'asere-catalogo-tours';
+  catalogoTours.setAttribute('aria-label', 'Catálogo de excursiones');
+  catalogoTours.style.cssText =
+    'display:none;position:fixed;inset:0;z-index:1000001;overflow-y:auto;' +
+    'background:#f8f3e8;padding:22px;box-sizing:border-box;color:#182d35;';
+  catalogoTours.innerHTML = `
+    <div style="max-width:1100px;margin:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+        <div>
+          <p style="margin:0;color:#98783b;font-weight:bold;letter-spacing:2px">ASERE RENT CAR</p>
+          <h2 style="margin:6px 0;font-family:Georgia,serif">Tours y excursiones</h2>
+          <p style="margin:0">Selecciona tu próxima aventura.</p>
+        </div>
+        <button type="button" data-asere-tours-inicio style="padding:12px 16px;margin-right:8px;border:1px solid #c8a45d;border-radius:8px;background:#fff;color:#182d35;cursor:pointer">← Inicio</button>
+        <button type="button" data-cerrar-tours
+          style="padding:12px 16px;border:1px solid #c8a45d;border-radius:8px;background:#fff;color:#182d35;cursor:pointer">
+          Cerrar ✕
+        </button>
+      </div>
+      <div id="asere-tarjetas-tours"
+        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px"></div>
+    </div>`;
+
+  document.body.appendChild(catalogoTours);
+
+  const tarjetasTours = catalogoTours.querySelector('#asere-tarjetas-tours');
+  excursionesAsere.forEach(([nombre, foto]) => {
+    const tarjeta = document.createElement('button');
+    tarjeta.type = 'button';
+    tarjeta.dataset.tour = nombre;
+    tarjeta.style.cssText =
+      'padding:0;overflow:hidden;text-align:left;border:1px solid #e2d5b8;' +
+      'border-radius:12px;background:white;color:#182d35;cursor:pointer;' +
+      'box-shadow:0 3px 12px #00000012;';
+    const imagen = document.createElement('img');
+    imagen.src = foto + '?auto=format&fit=crop&w=700&q=80';
+    imagen.alt = nombre;
+    imagen.loading = 'lazy';
+    imagen.style.cssText = 'display:block;width:100%;height:150px;object-fit:cover;background:#e5e0d5;';
+    imagen.onerror = function() {
+      this.style.display = 'none';
+    };
+    const titulo = document.createElement('span');
+    titulo.textContent = nombre;
+    titulo.style.cssText = 'display:block;padding:14px;font-weight:bold;font-size:16px;';
+    tarjeta.append(imagen, titulo);
+    tarjetasTours.appendChild(tarjeta);
+  });
+
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('[data-asere-volver-inicio]') ||
+        e.target.closest('[data-asere-tours-inicio]')) {
+      categoriasAsere.style.display = 'none';
+      vehiculosAsere.style.display = 'none';
+      ocultarCatalogoTours();
+      modal.style.display = 'none';
+      modal.classList.remove('abierto');
+      document.body.style.overflow = '';
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      return;
+    }
+
+    if (e.target.closest('[data-asere-volver-categorias]')) {
+      vehiculosAsere.style.display = 'none';
+      categoriasAsere.style.display = 'block';
+      return;
+    }
+
+    if (e.target.closest('#asere-volver-tours')) {
+      modal.style.display = 'none';
+      modal.classList.remove('abierto');
+      mostrarCatalogoTours();
+      return;
+    }
+  });
+
+  function mostrarCatalogoTours() {
+    catalogoTours.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function ocultarCatalogoTours() {
+    catalogoTours.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  catalogoTours.addEventListener('click', function(e) {
+    if (e.target.closest('[data-cerrar-tours]')) {
+      ocultarCatalogoTours();
+      return;
+    }
+    const tarjeta = e.target.closest('[data-tour]');
+    if (!tarjeta) return;
+
+    const nombreElegido = tarjeta.dataset.tour;
+    ocultarCatalogoTours();
+    abrir('Tours', '');
+    const campoExcursion = form.querySelector('[name="excursion"]');
+    if (campoExcursion) {
+      campoExcursion.value = nombreElegido;
+      campoExcursion.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && catalogoTours.style.display === 'block') {
+      ocultarCatalogoTours();
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    const boton = e.target.closest('.js-solicitud');
+    if (boton) {
+      
+      const servicioPulsado = (boton.dataset.servicio || '').toLowerCase();
+      if (servicioPulsado.includes('tour') || servicioPulsado.includes('excurs')) {
+        mostrarCatalogoTours();
+      } else if (servicioPulsado.includes('renta')) {
+        categoriasAsere.style.display = 'block';
+      } else {
+        abrir(boton.dataset.servicio, boton.dataset.categoria || '');
+      }
+      return;
+    }
+    const enlace = e.target.closest('a[href*="wa.me/18293517721"]');
+    if (enlace) {
+      e.preventDefault();
+      abrir('Consulta general', '');
+    }
+  });
+
+  document.getElementById('mambo-cerrar').addEventListener('click', cerrar);
+  document.getElementById('mambo-cancelar').addEventListener('click', cerrar);
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) cerrar();
+  });
+  document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') cerrar();
+});
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const datos = new FormData(form);
+    const etiquetas = {
+      servicio: 'Servicio',
+      categoria: 'Categoría',
+      modalidad: 'Modalidad',
+      vehiculo: 'Vehículo',
+      fecha: 'Fecha',
+      hora: 'Hora',
+      fechaFin: 'Fecha de devolución',
+      horaFin: 'Hora de devolución',
+      recogida: 'Lugar de recogida',
+      destino: 'Destino o devolución',
+      pasajeros: 'Cantidad de personas',
+      nombre: 'Nombre completo',
+      telefono: 'Teléfono',
+      cedula: 'Cédula',
+      licencia: 'Número de licencia',
+      excursion: 'Tour o excursión',
+      adultos: 'Cantidad de adultos',
+      ninos: 'Cantidad de niños',
+      precioAdulto: 'Precio por adulto',
+      precioNino: 'Precio por niño',
+      totalExcursion: 'Total estimado de la excursión',
+      vuelo: 'Número de vuelo',
+      detalles: 'Comentarios',
+      tipoChofer: 'Tipo de chofer',
+      cantidadChofer: 'Cantidad de horas o días de chofer',
+      subtotalVehiculo: 'Subtotal del vehículo',
+      subtotalChofer: 'Subtotal del chofer',
+      totalReserva: 'Total estimado de la reserva'
+    };
+
+    const lineas = [];
+    for (const [campo, valor] of datos.entries()) {
+      if (campo === 'fotoLicencia') continue;
+      if (valor && String(valor).trim()) {
+        let texto = String(valor).trim();
+        if (campo === 'modalidad') {
+          texto = texto === 'chofer'
+            ? 'Quiero vehículo con chofer'
+            : 'Conduciré yo';
+        }
+        lineas.push((etiquetas[campo] || campo) + ': ' + texto);
+      }
+    }
+
+    const archivo = datos.get('fotoLicencia');
+    let mensaje = 'Hola, ASERE RENT CAR & TRANSFER / EXCURSIONS. Quiero solicitar una reserva:\n\n'
+      + lineas.join('\n');
+
+    if (archivo && archivo.name) {
+      mensaje += '\n\nFoto de licencia seleccionada: ' + archivo.name
+        + '\nPor favor, adjuntaré la foto manualmente en WhatsApp.';
+    }
+
+    window.open(
+      'https://wa.me/18293517721?text=' + encodeURIComponent(mensaje),
+      '_blank'
+    );
+  });
+})();
+</script>
+</body>
+</html>
+
