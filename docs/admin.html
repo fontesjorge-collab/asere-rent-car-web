@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Administración | MAMBO TROPICAL VIP</title>
+  <title>Administración | ASERE RENT CAR & TRANSFER</title>
 
   <style>
     * { box-sizing: border-box; }
@@ -107,7 +107,7 @@
 
 <body>
   <header>
-    <h1>MAMBO TROPICAL VIP</h1>
+    <h1>ASERE RENT CAR & TRANSFER</h1>
     <p>Panel de administración</p>
   </header>
 
@@ -404,8 +404,24 @@ if (field.key === 'imagen_url') {
       setStatus('Guardando…');
 
       try {
-        const { data: authData } = await supabase.auth.getUser();
-              } else {ase.from(currentTable).insert(payload);
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
+        if (!authData.user || !(await isAdmin(authData.user))) {
+          throw new Error('No tienes autorización como administrador.');
+        }
+
+        const payload = getFormData();
+        let result;
+
+        if (editingId) {
+          result = await supabase
+            .from(currentTable)
+            .update(payload)
+            .eq('id', editingId);
+        } else {
+          result = await supabase
+            .from(currentTable)
+            .insert(payload);
         }
 
         if (result.error) throw result.error;
