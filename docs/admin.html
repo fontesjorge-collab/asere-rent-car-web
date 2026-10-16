@@ -118,6 +118,7 @@
         Entra con el correo y la contraseña de tu usuario de Supabase.
       </p>
 
+      <p id="loginStatus" role="status" class="muted"></p>
       <form id="loginForm">
         <label for="email">Correo electrónico</label>
         <input id="email" type="email" autocomplete="username" required>
@@ -241,7 +242,7 @@
           await supabase.auth.signOut();
           $('loginPanel').classList.remove('hidden');
           $('appPanel').classList.add('hidden');
-          alert('Tu usuario no está autorizado como administrador.');
+          $('loginStatus').textContent = 'El inicio de sesión funcionó, pero este usuario no aparece autorizado como administrador. Verificaremos el acceso.';
           return;
         }
 
@@ -250,25 +251,37 @@
         $('userEmail').textContent = session.user.email || '';
         await loadRecords();
       } catch (error) {
-        setStatus('No se pudo verificar el administrador: ' +
-          error.message, true);
+        $('loginPanel').classList.remove('hidden');
+        $('appPanel').classList.add('hidden');
+        $('loginStatus').textContent = 'No se pudo verificar el administrador: ' +
+          (error?.message || String(error));
       }
     }
 
     $('loginForm').addEventListener('submit', async event => {
       event.preventDefault();
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: $('email').value.trim(),
-        password: $('password').value
-      });
+      $('loginStatus').textContent = 'Comprobando acceso…';
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: $('email').value.trim(),
+          password: $('password').value
+        });
 
-      if (error) {
-        alert('No se pudo iniciar sesión: ' + error.message);
-        return;
+        if (error) {
+          $('loginStatus').textContent = 'No se pudo iniciar sesión: ' + error.message;
+          return;
+        }
+
+        if (!data.session) {
+          $('loginStatus').textContent = 'Supabase no devolvió una sesión. Revisa el usuario y vuelve a intentar.';
+          return;
+        }
+
+        await showSession(data.session);
+      } catch (error) {
+        $('loginStatus').textContent = 'Error al comprobar el acceso: ' + (error?.message || String(error));
       }
-
-      await showSession(data.session);
     });
 
     $('logoutButton').addEventListener('click', async () => {
