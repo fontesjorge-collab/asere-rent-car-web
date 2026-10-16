@@ -567,14 +567,24 @@ if (field.key === 'imagen_url') {
 
     $('refreshButton').addEventListener('click', loadRecords);
 
-    // Evita que dos verificaciones de sesión se ejecuten al mismo tiempo.
-    // El formulario de acceso llama a showSession después del inicio de sesión.
+    // Mantiene la sesión en el navegador y recupera el panel al volver a abrir el enlace.
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) {
       $('loginStatus').textContent = 'No se pudo comprobar la sesión: ' + sessionError.message;
     } else {
       await showSession(sessionData.session);
     }
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (_event === 'SIGNED_OUT') {
+        $('loginPanel').classList.remove('hidden');
+        $('appPanel').classList.add('hidden');
+      } else if (session) {
+        $('loginPanel').classList.add('hidden');
+        $('appPanel').classList.remove('hidden');
+        $('userEmail').textContent = session.user.email || '';
+      }
+    });
   </script>
 </body>
 </html>
