@@ -567,12 +567,14 @@ if (field.key === 'imagen_url') {
 
     $('refreshButton').addEventListener('click', loadRecords);
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setTimeout(() => showSession(session), 0);
-    });
-
-    const { data: sessionData } = await supabase.auth.getSession();
-    await showSession(sessionData.session);
+    // Evita que dos verificaciones de sesión se ejecuten al mismo tiempo.
+    // El formulario de acceso llama a showSession después del inicio de sesión.
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      $('loginStatus').textContent = 'No se pudo comprobar la sesión: ' + sessionError.message;
+    } else {
+      await showSession(sessionData.session);
+    }
   </script>
 </body>
 </html>
