@@ -315,6 +315,52 @@
 
           input.value = record[field.key] ?? '';
           wrapper.append(input);
+          
+if (field.key === 'imagen_url') {
+  const upload = document.createElement('input');
+  upload.type = 'file';
+  upload.accept = 'image/*';
+  upload.style.marginTop = '10px';
+
+  const help = document.createElement('small');
+  help.textContent = 'O selecciona una foto de tu teléfono';
+  wrapper.append(help);
+  wrapper.append(upload);
+
+  upload.addEventListener('change', async () => {
+    const file = upload.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La foto debe pesar menos de 5 MB.');
+      upload.value = '';
+      return;
+    }
+
+    const extension = file.name.split('.').pop().toLowerCase();
+    const path = Date.now() + '-' +
+      Math.random().toString(36).slice(2) + '.' + extension;
+
+    alert('Subiendo foto. Espera un momento...');
+
+    const { data, error } = await supabase.storage
+      .from('vehicles')
+      .upload(path, file);
+
+    if (error) {
+      alert('No se pudo subir la foto: ' + error.message);
+      return;
+    }
+
+    const { data: publicData } = supabase.storage
+      .from('vehicles')
+      .getPublicUrl(data.path);
+
+    input.value = publicData.publicUrl;
+    alert('Foto subida. Ahora guarda el registro.');
+  });
+}
+
         }
 
         $('fields').append(wrapper);
@@ -359,18 +405,7 @@
 
       try {
         const { data: authData } = await supabase.auth.getUser();
-        if (!authData.user || !(await isAdmin(authData.user))) {
-          throw new Error('La sesión no tiene autorización de administrador.');
-        }
-
-        const payload = getFormData();
-        let result;
-
-        if (editingId) {
-          result = await supabase.from(currentTable)
-            .update(payload).eq('id', editingId);
-        } else {
-          result = await supabase.from(currentTable).insert(payload);
+              } else {ase.from(currentTable).insert(payload);
         }
 
         if (result.error) throw result.error;
