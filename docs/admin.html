@@ -1,0 +1,514 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración | MAMBO TROPICAL VIP</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f5f0e7;
+      color: #211b15;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: #171512;
+      color: #d7b46a;
+      padding: 22px 16px;
+      text-align: center;
+    }
+
+    header h1 { margin: 0 0 8px; font-size: 23px; }
+    header p { margin: 0; color: #eee2c8; }
+
+    main {
+      width: min(100% - 24px, 950px);
+      margin: 24px auto;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 15px #0000000d;
+    }
+
+    h2 { margin-top: 0; }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 12px;
+      border: 1px solid #d4c9b7;
+      border-radius: 7px;
+      font: inherit;
+    }
+
+    textarea { min-height: 85px; resize: vertical; }
+
+    label { font-weight: bold; font-size: 14px; }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 12px 15px;
+      margin: 4px 3px 4px 0;
+      font-weight: bold;
+      cursor: pointer;
+      background: #d7b46a;
+      color: #171512;
+    }
+
+    button.secondary { background: #e9e5dc; }
+    button.danger { background: #a52a2a; color: white; }
+    button:disabled { opacity: .5; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tabs button.active { background: #171512; color: #d7b46a; }
+
+    .item {
+      border: 1px solid #e6dfd3;
+      border-radius: 9px;
+      padding: 13px;
+      margin: 10px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .item img {
+      width: 100%;
+      max-width: 230px;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 7px;
+      display: block;
+      margin: 8px 0;
+    }
+
+    .muted { color: #71695e; font-size: 13px; }
+    #status { white-space: pre-wrap; margin-top: 12px; }
+    .hidden { display: none !important; }
+
+    @media (min-width: 650px) {
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 14px;
+      }
+      .wide { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>MAMBO TROPICAL VIP</h1>
+    <p>Panel de administración</p>
+  </header>
+
+  <main>
+    <section id="loginPanel" class="panel">
+      <h2>Iniciar sesión</h2>
+      <p class="muted">
+        Entra con el correo y la contraseña de tu usuario de Supabase.
+      </p>
+
+      <form id="loginForm">
+        <label for="email">Correo electrónico</label>
+        <input id="email" type="email" autocomplete="username" required>
+
+        <label for="password">Contraseña</label>
+        <input id="password" type="password"
+               autocomplete="current-password" required>
+
+        <button type="submit">Entrar al panel</button>
+      </form>
+    </section>
+
+    <section id="appPanel" class="hidden">
+      <div class="panel">
+        <div>
+          <strong>Sesión iniciada</strong>
+          <p id="userEmail" class="muted"></p>
+        </div>
+        <button id="logoutButton" class="secondary">Cerrar sesión</button>
+      </div>
+
+      <div class="panel">
+        <h2>¿Qué deseas administrar?</h2>
+        <div class="tabs">
+          <button data-table="vehiculos" class="active">Vehículos</button>
+          <button data-table="excursiones">Excursiones</button>
+          <button data-table="transfers">Transfers</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 id="formTitle">Añadir vehículo</h2>
+
+        <form id="itemForm">
+          <div id="fields" class="fields"></div>
+
+          <button type="submit">Guardar</button>
+          <button type="button" id="cancelEdit"
+                  class="secondary hidden">Cancelar edición</button>
+        </form>
+        <p id="status" role="status"></p>
+      </div>
+
+      <div class="panel">
+        <h2 id="listTitle">Vehículos registrados</h2>
+        <button id="refreshButton" class="secondary">Actualizar lista</button>
+        <div id="itemsList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL =
+      'https://euuhtluvcdmeltwrlbeo.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_qYp_nc1X8gmUgqv4iy35Ig_cy44MQ1s';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const schemas = {
+      vehiculos: [
+        { key: 'nombre', label: 'Nombre del vehículo', required: true },
+        { key: 'categoria', label: 'Categoría (Sedán, SUV, etc.)', required: true },
+        { key: 'descripcion', label: 'Descripción', type: 'textarea' },
+        { key: 'precio_dia', label: 'Precio por día', type: 'number', required: true },
+        { key: 'imagen_url', label: 'URL de la foto', type: 'url', wide: true },
+        { key: 'activo', label: 'Visible en la página pública', type: 'checkbox' }
+      ],
+      excursiones: [
+        { key: 'nombre', label: 'Nombre de la excursión', required: true },
+        { key: 'descripcion', label: 'Descripción', type: 'textarea', wide: true },
+        { key: 'precio', label: 'Precio', type: 'number', required: true },
+        { key: 'imagen_url', label: 'URL de la foto', type: 'url', wide: true },
+        { key: 'activo', label: 'Visible en la página pública', type: 'checkbox' }
+      ],
+      transfers: [
+        { key: 'origen', label: 'Origen', required: true },
+        { key: 'destino', label: 'Destino', required: true },
+        { key: 'precio', label: 'Precio', type: 'number', required: true },
+        { key: 'activo', label: 'Visible en la página pública', type: 'checkbox' }
+      ]
+    };
+
+    let currentTable = 'vehiculos';
+    let editingId = null;
+    let records = [];
+
+    const $ = id => document.getElementById(id);
+
+    function setStatus(message, error = false) {
+      $('status').textContent = message;
+      $('status').style.color = error ? '#a52a2a' : '#32663a';
+    }
+
+    async function isAdmin(user) {
+      const { data, error } = await supabase
+        .from('asere_admins')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return Boolean(data);
+    }
+
+    async function showSession(session) {
+      if (!session) {
+        $('loginPanel').classList.remove('hidden');
+        $('appPanel').classList.add('hidden');
+        return;
+      }
+
+      try {
+        const admin = await isAdmin(session.user);
+
+        if (!admin) {
+          await supabase.auth.signOut();
+          $('loginPanel').classList.remove('hidden');
+          $('appPanel').classList.add('hidden');
+          alert('Tu usuario no está autorizado como administrador.');
+          return;
+        }
+
+        $('loginPanel').classList.add('hidden');
+        $('appPanel').classList.remove('hidden');
+        $('userEmail').textContent = session.user.email || '';
+        await loadRecords();
+      } catch (error) {
+        setStatus('No se pudo verificar el administrador: ' +
+          error.message, true);
+      }
+    }
+
+    $('loginForm').addEventListener('submit', async event => {
+      event.preventDefault();
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+
+      if (error) {
+        alert('No se pudo iniciar sesión: ' + error.message);
+        return;
+      }
+
+      await showSession(data.session);
+    });
+
+    $('logoutButton').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    });
+
+    function renderFields(record = {}) {
+      $('fields').replaceChildren();
+
+      for (const field of schemas[currentTable]) {
+        const wrapper = document.createElement('div');
+        if (field.wide || field.type === 'textarea') {
+          wrapper.className = 'wide';
+        }
+
+        const label = document.createElement('label');
+        label.htmlFor = 'field-' + field.key;
+        label.textContent = field.label;
+        wrapper.append(label);
+
+        if (field.type === 'checkbox') {
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.id = 'field-' + field.key;
+          input.checked = record[field.key] ?? true;
+          input.style.width = 'auto';
+          input.style.marginLeft = '10px';
+          wrapper.append(input);
+        } else {
+          const input = document.createElement(
+            field.type === 'textarea' ? 'textarea' : 'input'
+          );
+          input.id = 'field-' + field.key;
+          input.name = field.key;
+          input.type = field.type === 'number' ? 'number' :
+            field.type === 'url' ? 'url' : 'text';
+
+          if (field.required) input.required = true;
+          if (field.type === 'number') {
+            input.min = '0';
+            input.step = '0.01';
+          }
+
+          input.value = record[field.key] ?? '';
+          wrapper.append(input);
+        }
+
+        $('fields').append(wrapper);
+      }
+    }
+
+    function resetForm() {
+      editingId = null;
+      $('itemForm').reset();
+      $('formTitle').textContent = 'Añadir ' + singular();
+      $('cancelEdit').classList.add('hidden');
+      renderFields();
+      setStatus('');
+    }
+
+    function singular() {
+      return currentTable === 'vehiculos' ? 'vehículo' :
+        currentTable === 'excursiones' ? 'excursión' : 'transfer';
+    }
+
+    function getFormData() {
+      const data = {};
+
+      for (const field of schemas[currentTable]) {
+        const input = $('field-' + field.key);
+
+        if (field.type === 'checkbox') {
+          data[field.key] = input.checked;
+        } else if (field.type === 'number') {
+          data[field.key] = Number(input.value);
+        } else {
+          data[field.key] = input.value.trim() || null;
+        }
+      }
+
+      return data;
+    }
+
+    $('itemForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      setStatus('Guardando…');
+
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData.user || !(await isAdmin(authData.user))) {
+          throw new Error('La sesión no tiene autorización de administrador.');
+        }
+
+        const payload = getFormData();
+        let result;
+
+        if (editingId) {
+          result = await supabase.from(currentTable)
+            .update(payload).eq('id', editingId);
+        } else {
+          result = await supabase.from(currentTable).insert(payload);
+        }
+
+        if (result.error) throw result.error;
+
+        resetForm();
+        setStatus('Guardado correctamente.');
+        await loadRecords();
+      } catch (error) {
+        setStatus('No se pudo guardar: ' + error.message, true);
+      }
+    });
+
+    $('cancelEdit').addEventListener('click', resetForm);
+
+    async function loadRecords() {
+      $('itemsList').textContent = 'Cargando…';
+
+      const { data, error } = await supabase
+        .from(currentTable)
+        .select('*')
+        .order('creado_en', { ascending: false });
+
+      if (error) {
+        $('itemsList').textContent = 'Error al cargar: ' + error.message;
+        return;
+      }
+
+      records = data || [];
+      renderList();
+    }
+
+    function renderList() {
+      $('itemsList').replaceChildren();
+
+      if (!records.length) {
+        $('itemsList').textContent = 'Todavía no hay registros.';
+        return;
+      }
+
+      for (const record of records) {
+        const item = document.createElement('article');
+        item.className = 'item';
+
+        const title = document.createElement('h3');
+        title.textContent = record.nombre ||
+          [record.origen, record.destino].filter(Boolean).join(' → ') ||
+          'Registro';
+        item.append(title);
+
+        const details = document.createElement('p');
+        details.textContent = currentTable === 'vehiculos'
+          ? `${record.categoria || ''} · Precio/día: ${record.precio_dia ?? ''}`
+          : currentTable === 'excursiones'
+            ? `Precio: ${record.precio ?? ''}`
+            : `Precio: ${record.precio ?? ''}`;
+        item.append(details);
+
+        const status = document.createElement('p');
+        status.className = 'muted';
+        status.textContent = record.activo ? 'Visible' : 'Oculto';
+        item.append(status);
+
+        if (record.imagen_url) {
+          const image = document.createElement('img');
+          image.src = record.imagen_url;
+          image.alt = title.textContent;
+          image.loading = 'lazy';
+          image.onerror = () => image.remove();
+          item.append(image);
+        }
+
+        const edit = document.createElement('button');
+        edit.textContent = 'Editar';
+        edit.addEventListener('click', () => {
+          editingId = record.id;
+          $('formTitle').textContent = 'Editar ' + singular();
+          $('cancelEdit').classList.remove('hidden');
+          renderFields(record);
+          $('itemForm').scrollIntoView({ behavior: 'smooth' });
+          setStatus('');
+        });
+        item.append(edit);
+
+        const remove = document.createElement('button');
+        remove.textContent = 'Eliminar';
+        remove.className = 'danger';
+        remove.addEventListener('click', async () => {
+          if (!confirm('¿Seguro que deseas eliminar este registro?')) return;
+
+          const { data: authData } = await supabase.auth.getUser();
+          if (!authData.user || !(await isAdmin(authData.user))) {
+            alert('No tienes autorización.');
+            return;
+          }
+
+          const { error } = await supabase
+            .from(currentTable).delete().eq('id', record.id);
+
+          if (error) {
+            alert('No se pudo eliminar: ' + error.message);
+            return;
+          }
+
+          if (editingId === record.id) resetForm();
+          await loadRecords();
+        });
+        item.append(remove);
+
+        $('itemsList').append(item);
+      }
+    }
+
+    document.querySelectorAll('[data-table]').forEach(button => {
+      button.addEventListener('click', async () => {
+        currentTable = button.dataset.table;
+        document.querySelectorAll('[data-table]').forEach(b =>
+          b.classList.toggle('active', b === button)
+        );
+
+        $('formTitle').textContent = 'Añadir ' + singular();
+        $('listTitle').textContent =
+          currentTable === 'vehiculos' ? 'Vehículos registrados' :
+          currentTable === 'excursiones' ? 'Excursiones registradas' :
+          'Transfers registrados';
+
+        resetForm();
+        await loadRecords();
+      });
+    });
+
+    $('refreshButton').addEventListener('click', loadRecords);
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setTimeout(() => showSession(session), 0);
+    });
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    await showSession(sessionData.session);
+  </script>
+</body>
+</html>
