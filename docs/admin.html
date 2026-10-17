@@ -298,6 +298,15 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
 .asere-editing [data-asere-editable="1"]{outline:1px dashed #f4c24f;outline-offset:3px;cursor:text}
 .asere-editing img[data-asere-image="1"]{outline:3px solid #f4c24f;cursor:pointer}
 #asereEditStatus{font-size:12px;color:#f4c24f;width:100%}
+#aserePhotoManager{position:fixed;inset:0;z-index:1000000;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:16px;font-family:Arial,sans-serif;color:#fff}
+#aserePhotoManager .photo-card{background:#10212d;border:1px solid #f4c24f;border-radius:16px;padding:22px;width:min(560px,100%);max-height:90vh;overflow:auto}
+#aserePhotoManager h2{color:#f4c24f;margin-top:0}
+#aserePhotoManager label{display:block;margin:12px 0 6px}
+#aserePhotoManager select,#aserePhotoManager input{width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1px solid #888;background:#fff;color:#111}
+#aserePhotoManager button{padding:11px 14px;border:0;border-radius:8px;background:#f4c24f;color:#111;font-weight:700;cursor:pointer;margin:10px 6px 0 0}
+#aserePhotoPreview{display:block;max-width:100%;max-height:220px;object-fit:contain;margin:12px auto;border-radius:8px}
+#aserePhotoManagerStatus{min-height:24px;color:#f4c24f}
+
 </style>
 <div id="asereAdminGate">
  <form class="gate-card" id="asereAdminLogin">
@@ -310,9 +319,26 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
  </form>
 </div>
 <input id="aserePhotoFile" type="file" accept="image/*" hidden>
+<div id="aserePhotoManager" role="dialog" aria-modal="true" aria-label="Fotos del catálogo">
+ <div class="photo-card">
+  <h2>Fotos que verá el cliente</h2>
+  <p>Selecciona un vehículo o una excursión y sube la foto desde la galería de tu teléfono. La foto se guardará en el registro de Supabase para que aparezca en la página pública.</p>
+  <label for="aserePhotoTable">Qué quieres editar</label>
+  <select id="aserePhotoTable"><option value="vehiculos">Vehículos</option><option value="excursiones">Excursiones</option></select>
+  <label for="aserePhotoRecord">Selecciona el vehículo o excursión</label>
+  <select id="aserePhotoRecord"><option value="">Cargando catálogo…</option></select>
+  <img id="aserePhotoPreview" alt="Vista previa de la foto seleccionada" hidden>
+  <label for="asereCatalogPhotoFile">Foto desde el teléfono o computadora</label>
+  <input id="asereCatalogPhotoFile" type="file" accept="image/*">
+  <p id="aserePhotoManagerStatus" role="status"></p>
+  <button type="button" id="asereSaveCatalogPhoto">Subir y publicar foto</button>
+  <button type="button" id="asereClosePhotos">Cerrar</button>
+ </div>
+</div>
 <div id="asereEditBar" hidden>
  <strong>ASERE · Editor de página</strong>
  <button type="button" id="asereToggleEdit">Activar edición</button>
+ <button type="button" id="asereOpenPhotos">Fotos de vehículos y excursiones</button>
  <button type="button" id="asereSaveEdits">Guardar cambios</button>
  <button type="button" id="asereReloadEdits">Descartar / recargar</button>
  <button type="button" id="asereLogout">Salir</button>
@@ -353,6 +379,48 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
    editStatus.textContent='Foto subida. Pulsa Guardar cambios para publicarla.';
  });
  $('asereSaveEdits').addEventListener('click',async()=>{if(!adminClient){editStatus.textContent='Inicia sesión para guardar.';return;}const changes={...savedEdits};document.querySelectorAll('[data-asere-editable="1"]').forEach(el=>{if(el.dataset.asereKey)changes[el.dataset.asereKey]=el.textContent;});document.querySelectorAll('img[data-asere-image="1"]').forEach(el=>{if(el.dataset.asereKey)changes[el.dataset.asereKey]=el.src;});editStatus.textContent='Guardando cambios…';const {data:old,error:readError}=await adminClient.from('asere_configuracion').select('config').eq('id','principal').maybeSingle();if(readError){editStatus.textContent='No se pudo leer configuración: '+readError.message;return;}let cfg=old?.config||{};if(typeof cfg==='string'){try{cfg=JSON.parse(cfg)}catch(e){cfg={}}}cfg.publicPageEdits=changes;const {error}=await adminClient.from('asere_configuracion').upsert({id:'principal',config:cfg,actualizado_en:new Date().toISOString()},{onConflict:'id'});if(error){editStatus.textContent='No se pudo guardar: '+error.message;return;}savedEdits=changes;editStatus.textContent='Guardado en Supabase. La página pública aplicará estos textos y fotos al recargar.';setEditing(false);});
+
+ const photoManager=$('aserePhotoManager'),photoTable=$('aserePhotoTable'),photoRecord=$('aserePhotoRecord'),photoFile=$('asereCatalogPhotoFile'),photoStatus=$('aserePhotoManagerStatus'),photoPreview=$('aserePhotoPreview');
+ let photoRows=[];
+ function rowLabel(row,table){return String(row.nombre||row.name||row.titulo||row.modelo||row.model||(table==='vehiculos'?'Vehículo':'Excursión')+' '+(row.id??''));}
+ async function loadPhotoRows(){
+   if(!adminClient){photoStatus.textContent='Primero inicia sesión como administrador.';return;}
+   photoStatus.textContent='Cargando catálogo…';photoRecord.innerHTML='';
+   const table=photoTable.value;
+   const {data,error}=await adminClient.from(table).select('*').order('nombre',{ascending:true});
+   if(error){photoRows=[];photoStatus.textContent='No se pudo leer '+table+': '+error.message;return;}
+   photoRows=Array.isArray(data)?data:[];
+   if(!photoRows.length){photoRecord.innerHTML='<option value="">No hay registros en esta tabla</option>';photoStatus.textContent='No hay registros para seleccionar.';return;}
+   photoRows.forEach((row,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=rowLabel(row,table);photoRecord.appendChild(option);});
+   updatePhotoPreview();photoStatus.textContent='Selecciona el registro y la foto que quieres publicar.';
+ }
+ function updatePhotoPreview(){const row=photoRows[Number(photoRecord.value)];const url=row&&(row.imagen_url||row.image_url||row.foto||row.photo);if(url){photoPreview.src=url;photoPreview.hidden=false;}else{photoPreview.removeAttribute('src');photoPreview.hidden=true;}}
+ $('asereOpenPhotos').addEventListener('click',async()=>{photoManager.style.display='flex';await loadPhotoRows();});
+ $('asereClosePhotos').addEventListener('click',()=>{photoManager.style.display='none';photoFile.value='';photoPreview.hidden=true;});
+ photoTable.addEventListener('change',loadPhotoRows);photoRecord.addEventListener('change',updatePhotoPreview);
+ photoFile.addEventListener('change',()=>{const f=photoFile.files&&photoFile.files[0];if(f){if(!f.type.startsWith('image/')){photoStatus.textContent='Selecciona un archivo de imagen.';photoFile.value='';return;}if(f.size>5*1024*1024){photoStatus.textContent='La imagen debe pesar menos de 5 MB.';photoFile.value='';return;}photoPreview.src=URL.createObjectURL(f);photoPreview.hidden=false;photoStatus.textContent='Foto lista para subir.';}});
+ $('asereSaveCatalogPhoto').addEventListener('click',async()=>{
+   const row=photoRows[Number(photoRecord.value)],file=photoFile.files&&photoFile.files[0],table=photoTable.value;
+   if(!adminClient){photoStatus.textContent='Primero inicia sesión como administrador.';return;}
+   if(!row){photoStatus.textContent='Selecciona un vehículo o excursión.';return;}
+   if(!file){photoStatus.textContent='Elige una foto desde tu galería primero.';return;}
+   if(!file.type.startsWith('image/')||file.size>5*1024*1024){photoStatus.textContent='Usa una imagen de hasta 5 MB.';return;}
+   const key=row.id!==undefined&&row.id!==null?'id':(row.nombre!==undefined?'nombre':null);
+   if(!key){photoStatus.textContent='No encuentro el identificador de este registro para actualizarlo.';return;}
+   photoStatus.textContent='Subiendo foto a Supabase…';
+   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+   const path='catalog/'+table+'/'+Date.now()+'-'+safeName;
+   const {error:uploadError}=await adminClient.storage.from('vehicles').upload(path,file,{contentType:file.type,cacheControl:'3600',upsert:false});
+   if(uploadError){photoStatus.textContent='Error al subir la foto: '+uploadError.message+' (revisa los permisos INSERT del bucket vehicles).';return;}
+   const {data:publicData}=adminClient.storage.from('vehicles').getPublicUrl(path);
+   const photoUrl=publicData.publicUrl;
+   const {data:updated,error:updateError}=await adminClient.from(table).update({imagen_url:photoUrl}).eq(key,row[key]).select('*').maybeSingle();
+   if(updateError||!updated){photoStatus.textContent='La foto se subió, pero no se pudo guardar en el catálogo: '+(updateError?updateError.message:'Supabase no devolvió el registro actualizado')+'. Revisa la política UPDATE de la tabla '+table+'.';return;}
+   row.imagen_url=photoUrl;photoPreview.src=photoUrl;photoPreview.hidden=false;photoFile.value='';
+   photoStatus.textContent='¡Foto publicada! Ya quedó guardada en '+table+'. Recarga la página pública para comprobarla.';
+   editStatus.textContent='Foto de catálogo guardada en Supabase para '+rowLabel(row,table)+'.';
+ });
+
  $('asereReloadEdits').addEventListener('click',()=>location.reload());$('asereLogout').addEventListener('click',async()=>{if(adminClient)await adminClient.auth.signOut();location.reload();});
 })();
 </script>
