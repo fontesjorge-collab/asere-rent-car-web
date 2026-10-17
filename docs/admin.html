@@ -68,8 +68,29 @@
     button.secondary { background: #e9e5dc; }
     button.danger { background: #a52a2a; color: white; }
     button:disabled { opacity: .5; }
-
-    .tabs { display: flex; flex-wrap: wrap; gap: 5px; }
+    button, input, textarea, select { touch-action: manipulation; }
+    button { min-height: 44px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tabs button { flex: 1 1 110px; }
+    .primary-action { width: 100%; min-height: 48px; font-size: 16px; }
+    .photo-picker {
+      display: block; width: 100%; margin: 8px 0 12px; padding: 13px;
+      border: 1px dashed #b99a58; border-radius: 9px; background: #fbf6eb;
+      color: #211b15; text-align: center; font-weight: bold; cursor: pointer;
+    }
+    .photo-picker input { display: none; }
+    .photo-preview { display: block; max-width: 100%; max-height: 220px; object-fit: contain; border-radius: 10px; margin: 8px 0 12px; }
+    .section-intro { margin-top: -4px; color: #71695e; font-size: 14px; }
+    .top-session { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .item-actions button { flex: 1 1 110px; }
+    @media (max-width: 480px) {
+      main { width: calc(100% - 16px); margin: 12px auto; }
+      .panel { padding: 15px; border-radius: 12px; }
+      header { padding: 18px 12px; }
+      header h1 { font-size: 20px; }
+      input, textarea, select { font-size: 16px; }
+    }
     .tabs button.active { background: #171512; color: #d7b46a; }
 
     .item {
@@ -133,7 +154,7 @@
     </section>
 
     <section id="appPanel" class="hidden">
-      <div class="panel">
+      <div class="panel top-session">
         <div>
           <strong>Sesión iniciada</strong>
           <p id="userEmail" class="muted"></p>
@@ -142,7 +163,8 @@
       </div>
 
       <div class="panel">
-        <h2>¿Qué deseas administrar?</h2>
+        <h2>Administrar tu negocio</h2>
+        <p class="section-intro">Elige una sección para añadir, editar, ocultar o eliminar registros.</p>
         <div class="tabs">
           <button data-table="vehiculos" class="active">Vehículos</button>
           <button data-table="excursiones">Excursiones</button>
@@ -152,11 +174,12 @@
 
       <div class="panel">
         <h2 id="formTitle">Añadir vehículo</h2>
+        <p class="section-intro">Completa los datos y guarda. Para cambiar una foto, selecciónala desde tu teléfono.</p>
 
         <form id="itemForm">
           <div id="fields" class="fields"></div>
 
-          <button type="submit">Guardar</button>
+          <button type="submit" class="primary-action">Guardar cambios</button>
           <button type="button" id="cancelEdit"
                   class="secondary hidden">Cancelar edición</button>
         </form>
@@ -181,7 +204,14 @@
     const SUPABASE_KEY =
       'sb_publishable_qYp_nc1X8gmUgqv4iy35Ig_cy44MQ1s';
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage
+      }
+    });
 
     const schemas = {
       vehiculos: [
@@ -350,47 +380,74 @@
           wrapper.append(input);
           
 if (field.key === 'imagen_url') {
+  const uploadLabel = document.createElement('label');
+  uploadLabel.className = 'photo-picker';
+  uploadLabel.textContent = '📷 Elegir foto desde el celular';
   const upload = document.createElement('input');
   upload.type = 'file';
   upload.accept = 'image/*';
-  upload.style.marginTop = '10px';
+  upload.setAttribute('aria-label', 'Elegir foto desde el celular');
+  uploadLabel.append(upload);
+  wrapper.append(uploadLabel);
 
   const help = document.createElement('small');
-  help.textContent = 'O selecciona una foto de tu teléfono';
+  help.className = 'muted';
+  help.textContent = 'JPG, PNG o WebP · máximo 5 MB. Después de subirla, pulsa Guardar.';
   wrapper.append(help);
-  wrapper.append(upload);
+
+  const preview = document.createElement('img');
+  preview.className = 'photo-preview';
+  preview.alt = 'Vista previa de la foto seleccionada';
+  preview.hidden = true;
+  wrapper.append(preview);
+
+  if (input.value) {
+    preview.src = input.value;
+    preview.hidden = false;
+  }
 
   upload.addEventListener('change', async () => {
-    const file = upload.files[0];
+    const file = upload.files && upload.files[0];
     if (!file) return;
 
+    if (!file.type.startsWith('image/')) {
+      alert('Selecciona un archivo de imagen.');
+      upload.value = '';
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) {
       alert('La foto debe pesar menos de 5 MB.');
       upload.value = '';
       return;
     }
 
-    const extension = file.name.split('.').pop().toLowerCase();
-    const path = Date.now() + '-' +
+    const extension = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const path = 'public/' + Date.now() + '-' +
       Math.random().toString(36).slice(2) + '.' + extension;
 
-    alert('Subiendo foto. Espera un momento...');
+    help.textContent = 'Subiendo foto… no cierres esta pantalla.';
+    upload.disabled = true;
+    try {
+      const { data, error } = await supabase.storage
+        .from('vehicles')
+        .upload(path, file, { contentType: file.type, cacheControl: '3600', upsert: false });
 
-    const { data, error } = await supabase.storage
-      .from('vehicles')
-      .upload(path, file);
+      if (error) throw error;
 
-    if (error) {
-      alert('No se pudo subir la foto: ' + error.message);
-      return;
+      const { data: publicData } = supabase.storage
+        .from('vehicles')
+        .getPublicUrl(data.path);
+
+      input.value = publicData.publicUrl;
+      preview.src = publicData.publicUrl;
+      preview.hidden = false;
+      help.textContent = 'Foto subida. Ahora pulsa Guardar para asociarla al registro.';
+    } catch (error) {
+      help.textContent = 'No se pudo subir la foto.';
+      alert('No se pudo subir la foto: ' + (error?.message || String(error)));
+    } finally {
+      upload.disabled = false;
     }
-
-    const { data: publicData } = supabase.storage
-      .from('vehicles')
-      .getPublicUrl(data.path);
-
-    input.value = publicData.publicUrl;
-    alert('Foto subida. Ahora guarda el registro.');
   });
 }
 
