@@ -222,7 +222,7 @@ function isSpecialCategory(category){const c=String(category||'').toLowerCase();
 function openVehicles(category){
  selectedCategory=category;
  document.getElementById('vehicleTitle').textContent=category;
- const list=getVehicles().filter(v=>String(val(v,['category','categoria','type','tipo'],'')).toLowerCase()===category.toLowerCase());
+ const list=getVehicles().filter(v=>{const vc=String(val(v,['category','categoria','type','tipo'],'')).trim().toLowerCase();const wanted=String(category||'').trim().toLowerCase();return vc===wanted||(isSpecialCategory(category)&&isSpecialCategory(vc));});
  const box=document.getElementById('vehicleCatalog');
  if(!list.length){
   const special=isSpecialCategory(category);
