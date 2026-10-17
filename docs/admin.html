@@ -303,7 +303,8 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
 #aserePhotoManager h2{color:#f4c24f;margin-top:0}
 #aserePhotoManager label{display:block;margin:12px 0 6px}
 #aserePhotoManager select,#aserePhotoManager input{width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1px solid #888;background:#fff;color:#111}
-#aserePhotoManager button{padding:11px 14px;border:0;border-radius:8px;background:#f4c24f;color:#111;font-weight:700;cursor:pointer;margin:10px 6px 0 0}\n#aserePhotoManager .asereGalleryButton{display:block;width:100%;box-sizing:border-box;padding:16px;background:#f4c24f;color:#111;border-radius:10px;text-align:center;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0;border:0}
+#aserePhotoManager button{padding:11px 14px;border:0;border-radius:8px;background:#f4c24f;color:#111;font-weight:700;cursor:pointer;margin:10px 6px 0 0}
+#aserePhotoManager .asereGalleryButton{display:block;width:100%;box-sizing:border-box;padding:16px;background:#f4c24f;color:#111;border-radius:10px;text-align:center;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0;border:0}
 #aserePhotoPreview{display:block;max-width:100%;max-height:220px;object-fit:contain;margin:12px auto;border-radius:8px}
 #aserePhotoManagerStatus{min-height:24px;color:#f4c24f}
 
@@ -387,7 +388,9 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
    if(!adminClient){photoStatus.textContent='Primero inicia sesión como administrador.';return;}
    photoStatus.textContent='Cargando catálogo…';photoRecord.innerHTML='';
    const table=photoTable.value;
-   let result=await adminClient.from(table).select('*');\n   if(result.error){photoRows=[];photoStatus.textContent='No se pudo leer '+table+': '+result.error.message;return;}\n   const data=result.data,error=result.error;
+   let result=await adminClient.from(table).select('*');
+   if(result.error){photoRows=[];photoStatus.textContent='No se pudo leer '+table+': '+result.error.message;return;}
+   const data=result.data,error=result.error;
    if(error){photoRows=[];photoStatus.textContent='No se pudo leer '+table+': '+error.message;return;}
    photoRows=Array.isArray(data)?data:[];
    if(!photoRows.length){photoRecord.innerHTML='<option value="">No hay registros en esta tabla</option>';photoStatus.textContent='No hay registros para seleccionar.';return;}
