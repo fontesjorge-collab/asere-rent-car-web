@@ -309,6 +309,7 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
   <p id="asereGateStatus" role="status"></p>
  </form>
 </div>
+<input id="aserePhotoFile" type="file" accept="image/*" hidden>
 <div id="asereEditBar" hidden>
  <strong>ASERE · Editor de página</strong>
  <button type="button" id="asereToggleEdit">Activar edición</button>
@@ -332,7 +333,25 @@ document.getElementById('transferForm').addEventListener('submit',e=>{e.preventD
  async function openEditor(session){const {data,error}=await adminClient.from('asere_admins').select('user_id').eq('user_id',session.user.id).maybeSingle();if(error||!data){status.textContent='Este usuario no tiene permisos de administrador. Revisa asere_admins en Supabase.';await adminClient.auth.signOut();return;}gate.style.display='none';bar.hidden=false;await loadEdits();setEditing(false);editStatus.textContent='Editor abierto. Los catálogos siguen usando los datos reales de Supabase.';}
  $('asereAdminLogin').addEventListener('submit',async e=>{e.preventDefault();status.textContent='Verificando acceso…';if(!window.supabase){status.textContent='No se pudo cargar Supabase. Recarga la página.';return;}adminClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}});const {data,error}=await adminClient.auth.signInWithPassword({email:$('asereAdminEmail').value.trim(),password:$('asereAdminPassword').value});if(error){status.textContent='No se pudo iniciar sesión: '+error.message;return;}await openEditor(data.session);});
  $('asereToggleEdit').addEventListener('click',()=>setEditing(!editing));
- document.addEventListener('click',e=>{const img=e.target.closest('img[data-asere-image="1"]');if(editing&&img){e.preventDefault();const next=prompt('Pega la URL pública de la nueva imagen:',img.src);if(next&&/^https?:\/\//i.test(next)){img.src=next;savedEdits[img.dataset.asereKey]=next;editStatus.textContent='Foto cambiada en esta vista. Pulsa Guardar cambios.';}}});
+ let imageToReplace=null;
+ document.addEventListener('click',e=>{const img=e.target.closest('img[data-asere-image="1"]');if(editing&&img){e.preventDefault();imageToReplace=img;$('aserePhotoFile').click();}});
+ $('aserePhotoFile').addEventListener('change',async e=>{
+   const file=e.target.files&&e.target.files[0];e.target.value='';
+   if(!file||!imageToReplace)return;
+   if(!file.type.startsWith('image/')){editStatus.textContent='Selecciona un archivo de imagen.';return;}
+   if(file.size>5*1024*1024){editStatus.textContent='La imagen debe pesar menos de 5 MB.';return;}
+   if(!adminClient){editStatus.textContent='Inicia sesión para subir fotos.';return;}
+   editStatus.textContent='Subiendo foto…';
+   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+   const path='public/'+Date.now()+'-'+safeName;
+   const {error}=await adminClient.storage.from('vehicles').upload(path,file,{contentType:file.type,cacheControl:'3600',upsert:false});
+   if(error){editStatus.textContent='No se pudo subir la foto: '+error.message;return;}
+   const {data}=adminClient.storage.from('vehicles').getPublicUrl(path);
+   imageToReplace.src=data.publicUrl;
+   savedEdits[imageToReplace.dataset.asereKey]=data.publicUrl;
+   imageToReplace=null;
+   editStatus.textContent='Foto subida. Pulsa Guardar cambios para publicarla.';
+ });
  $('asereSaveEdits').addEventListener('click',async()=>{if(!adminClient){editStatus.textContent='Inicia sesión para guardar.';return;}const changes={...savedEdits};document.querySelectorAll('[data-asere-editable="1"]').forEach(el=>{if(el.dataset.asereKey)changes[el.dataset.asereKey]=el.textContent;});document.querySelectorAll('img[data-asere-image="1"]').forEach(el=>{if(el.dataset.asereKey)changes[el.dataset.asereKey]=el.src;});editStatus.textContent='Guardando cambios…';const {data:old,error:readError}=await adminClient.from('asere_configuracion').select('config').eq('id','principal').maybeSingle();if(readError){editStatus.textContent='No se pudo leer configuración: '+readError.message;return;}let cfg=old?.config||{};if(typeof cfg==='string'){try{cfg=JSON.parse(cfg)}catch(e){cfg={}}}cfg.publicPageEdits=changes;const {error}=await adminClient.from('asere_configuracion').upsert({id:'principal',config:cfg,actualizado_en:new Date().toISOString()},{onConflict:'id'});if(error){editStatus.textContent='No se pudo guardar: '+error.message;return;}savedEdits=changes;editStatus.textContent='Guardado en Supabase. La página pública aplicará estos textos y fotos al recargar.';setEditing(false);});
  $('asereReloadEdits').addEventListener('click',()=>location.reload());$('asereLogout').addEventListener('click',async()=>{if(adminClient)await adminClient.auth.signOut();location.reload();});
 })();
