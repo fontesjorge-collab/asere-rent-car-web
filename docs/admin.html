@@ -128,6 +128,7 @@
                autocomplete="current-password" required>
 
         <button type="submit">Entrar al panel</button>
+        <button type="button" id="forgotPasswordButton" class="secondary">Olvidé mi contraseña</button>
       </form>
     </section>
 
@@ -281,6 +282,25 @@
         await showSession(data.session);
       } catch (error) {
         $('loginStatus').textContent = 'Error al comprobar el acceso: ' + (error?.message || String(error));
+      }
+    });
+
+    $('forgotPasswordButton').addEventListener('click', async () => {
+      const email = $('email').value.trim();
+      if (!email) {
+        $('loginStatus').textContent = 'Escribe primero tu correo electrónico y luego pulsa “Olvidé mi contraseña”.';
+        $('email').focus();
+        return;
+      }
+      $('loginStatus').textContent = 'Solicitando correo de recuperación…';
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: 'https://asererentcartransfer.netlify.app/docs/reset-password.html'
+        });
+        if (error) throw error;
+        $('loginStatus').textContent = 'Solicitud enviada. Revisa tu correo y abre el mensaje más reciente de recuperación.';
+      } catch (error) {
+        $('loginStatus').textContent = 'No se pudo enviar el correo: ' + (error?.message || String(error));
       }
     });
 
