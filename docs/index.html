@@ -292,12 +292,10 @@ function applyPublicPageEdits(){
 // los botones y la navegación siguen funcionando y luego se actualiza el catálogo.
 (function initSite(){
   categories();
-  openExcursions();
   updateCarSummary();
   showView('home');
   loadConfig().then(()=>{
     categories();
-    openExcursions();
     updateCarSummary();
     applyPublicPageEdits();
   }).catch(err=>{console.warn('Se mantiene la página con datos de respaldo:',err);applyPublicPageEdits();});
