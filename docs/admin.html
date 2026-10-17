@@ -295,7 +295,7 @@
       $('loginStatus').textContent = 'Solicitando correo de recuperación…';
       try {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: 'https://asererentcartransfer.netlify.app/docs/reset-password.html'
+          redirectTo: 'https://asererentcartransfer.netlify.app/reset-password.html'
         });
         if (error) throw error;
         $('loginStatus').textContent = 'Solicitud enviada. Revisa tu correo y abre el mensaje más reciente de recuperación.';
