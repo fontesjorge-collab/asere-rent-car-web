@@ -169,9 +169,11 @@
           <button data-table="vehiculos" class="active">Vehículos</button>
           <button data-table="excursiones">Excursiones</button>
           <button data-table="transfers">Transfers</button>
+          <button type="button" id="configTab" class="secondary">Configuración y precios generales</button>
         </div>
       </div>
 
+      <div id="catalogEditor">
       <div class="panel">
         <h2 id="formTitle">Añadir vehículo</h2>
         <p class="section-intro">Completa los datos y guarda. Para cambiar una foto, selecciónala desde tu teléfono.</p>
@@ -191,6 +193,16 @@
         <button id="refreshButton" class="secondary">Actualizar lista</button>
         <div id="itemsList"></div>
       </div>
+      </div>
+      <section id="configEditor" class="panel hidden">
+        <h2>Configuración y precios generales</h2>
+        <p class="section-intro">Aquí puedes revisar y modificar la configuración general que utiliza la página pública, incluidos precios y opciones que estén guardados en Supabase. No cambies las claves; modifica sus valores.</p>
+        <label for="configJson">Configuración de la página (JSON)</label>
+        <textarea id="configJson" spellcheck="false" style="min-height:320px;font-family:ui-monospace,monospace"></textarea>
+        <button type="button" id="loadConfigButton" class="secondary">Volver a cargar</button>
+        <button type="button" id="saveConfigButton" class="primary-action">Guardar configuración general</button>
+        <p id="configStatus" role="status" aria-live="polite"></p>
+      </section>
     </section>
   </main>
 
@@ -623,6 +635,66 @@ if (field.key === 'imagen_url') {
         $('itemsList').append(item);
       }
     }
+
+
+    async function loadGeneralConfig() {
+      $('configStatus').textContent = 'Cargando configuración…';
+      const { data, error } = await supabase
+        .from('asere_configuracion')
+        .select('id, config')
+        .eq('id', 'principal')
+        .maybeSingle();
+      if (error) {
+        $('configStatus').textContent = 'No se pudo cargar la configuración: ' + error.message;
+        return;
+      }
+      const config = data?.config ?? {};
+      $('configJson').value = JSON.stringify(
+        typeof config === 'string' ? JSON.parse(config) : config,
+        null, 2
+      );
+      $('configStatus').textContent = data
+        ? 'Configuración cargada desde Supabase.'
+        : 'No existe todavía un registro "principal". Puedes guardar uno nuevo.';
+    }
+
+    async function saveGeneralConfig() {
+      let config;
+      try {
+        config = JSON.parse($('configJson').value);
+        if (!config || typeof config !== 'object' || Array.isArray(config)) {
+          throw new Error('La configuración debe ser un objeto JSON.');
+        }
+      } catch (error) {
+        $('configStatus').textContent = 'Revisa el formato: ' + error.message;
+        return;
+      }
+      $('saveConfigButton').disabled = true;
+      $('configStatus').textContent = 'Guardando…';
+      const { error } = await supabase
+        .from('asere_configuracion')
+        .upsert({ id: 'principal', config, actualizado_en: new Date().toISOString() }, { onConflict: 'id' });
+      $('saveConfigButton').disabled = false;
+      if (error) {
+        $('configStatus').textContent = 'No se pudo guardar: ' + error.message;
+        return;
+      }
+      $('configStatus').textContent = 'Guardado en Supabase. La página pública leerá estos valores cuando se actualice o vuelva a cargar.';
+    }
+
+    $('configTab').addEventListener('click', async () => {
+      $('catalogEditor').classList.add('hidden');
+      $('configEditor').classList.remove('hidden');
+      await loadGeneralConfig();
+    });
+    document.querySelectorAll('[data-table]').forEach(button => {
+      button.addEventListener('click', () => {
+        $('configEditor').classList.add('hidden');
+        $('catalogEditor').classList.remove('hidden');
+      });
+    });
+    $('loadConfigButton').addEventListener('click', loadGeneralConfig);
+    $('saveConfigButton').addEventListener('click', saveGeneralConfig);
 
     document.querySelectorAll('[data-table]').forEach(button => {
       button.addEventListener('click', async () => {
