@@ -273,8 +273,25 @@ async function generateHotelRoutes(){
  const airport='Aeropuerto de Punta Cana';
  const normalize=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
  const existing=new Set((transferRows||[]).map(r=>normalize(r.origen||r.origin)+'>'+normalize(r.destino||r.destination)));
+ const zoneOf=name=>{
+  const n=normalize(name);
+  if(/cap cana|sanctuary|eden roc|zilara|ziva cap cana|margaritaville.*cap cana|trs cap cana|dreams cap cana|four points|westin puntacana|tortuga bay/.test(n))return 'capcana';
+  if(/serenade|dreams flora|sunscape coco|catalonia|cabeza de toro/.test(n))return 'cabezadetoro';
+  if(/macao|zoetry agua|live aqua|excellence punta cana|finest punta cana|breathless punta cana/.test(n))return 'macao';
+  if(/uvero|riu republica|dreams onyx/.test(n))return 'uveroalto';
+  if(/arena gorda|hard rock|bahia principe|royalton|majestic|iberostar|riu palace|riu bambu|occidental|caribe deluxe|tropical deluxe|grand bavaro princess|puntacana princess/.test(n))return 'arenagorda';
+  return 'bavaro';
+ };
+ const airportPrice={capcana:30,cabezadetoro:35,bavaro:40,arenagorda:45,macao:50,uveroalto:60};
+ const zoneOrder={capcana:0,cabezadetoro:1,bavaro:2,arenagorda:3,macao:4,uveroalto:5};
+ const routePrice=(o,d)=>{
+  if(normalize(o)===normalize(airport))return airportPrice[zoneOf(d)]||40;
+  if(normalize(d)===normalize(airport))return airportPrice[zoneOf(o)]||40;
+  const a=zoneOf(o),b=zoneOf(d),distance=Math.abs((zoneOrder[a]??2)-(zoneOrder[b]??2));
+  return a===b?15:distance===1?20:distance===2?25:distance===3?30:35;
+ };
  const routes=[];
- function add(o,d){const k=normalize(o)+'>'+normalize(d);if(o!==d&&!existing.has(k)){existing.add(k);routes.push({origen:o,destino:d,precio:0,activo:false})}}
+ function add(o,d){const k=normalize(o)+'>'+normalize(d);if(o!==d&&!existing.has(k)){existing.add(k);routes.push({origen:o,destino:d,precio:routePrice(o,d),activo:true})}}
  for(const h of hotels){add(airport,h);add(h,airport)}
  for(let i=0;i<hotels.length;i++){for(let j=0;j<hotels.length;j++){if(i!==j)add(hotels[i],hotels[j])}}
  if(!routes.length){status.textContent='No hay rutas nuevas: las rutas de esa lista ya existen.';return}
