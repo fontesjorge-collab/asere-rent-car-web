@@ -228,7 +228,7 @@ function openTransfer(){showView('transfer')}
 function isSpecialCategory(category){const c=String(category||'').toLowerCase();return c.includes('especial')||c.includes('otro')||c.includes('lujo')||c.includes('minivan')||c.includes('consignación')||c.includes('consignacion')}
 function vehicleMetaKey(v){const id=val(v,['id','uuid','vehiculo_id','vehicle_id'],'');if(id!=='')return String(id);const name=val(v,['name','nombre','model','modelo'],'Vehículo');const year=val(v,['year','anio','año','ano'],'');return String(name+' '+year).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/ /g,'-')}
 function vehicleMeta(v){return (cfg.vehicleInventory||{})[vehicleMetaKey(v)]||{}}
-function vehicleIsAvailableForDates(v,start,end){const m=vehicleMeta(v);if(m.status==='mantenimiento')return false;if(m.status!=='alquilado'||!m.rentalOut||!m.rentalIn)return true;const reqStart=new Date(start||0).getTime(),reqEnd=new Date(end||0).getTime(),out=new Date(m.rentalOut).getTime(),back=new Date(m.rentalIn).getTime();if(!reqStart||!reqEnd)return true;return !(reqStart<back&&reqEnd>out)}
+function vehicleIsAvailableForDates(v,start,end){const m=vehicleMeta(v);if(m.status==='mantenimiento')return false;if(m.status!=='alquilado')return true;if(!m.rentalOut||!m.rentalIn)return false;const reqStart=new Date(start||0).getTime(),reqEnd=new Date(end||0).getTime(),out=new Date(m.rentalOut).getTime(),back=new Date(m.rentalIn).getTime();if(!reqStart||!reqEnd)return true;return !(reqStart<back&&reqEnd>out)}
 function openVehicles(category){
  selectedCategory=category;
  document.getElementById('vehicleTitle').textContent=category;
