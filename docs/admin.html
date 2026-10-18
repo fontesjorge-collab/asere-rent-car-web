@@ -14,8 +14,8 @@
 <section id="transfersPage" class="panel hidden"><div class="panelhead"><h2>Rutas y precios de transfers</h2><div class="photo-actions"><button id="newTransfer">＋ Agregar ruta</button><button class="primary" id="reloadTransfers">Actualizar lista</button></div></div><p class="muted">Aquí puedes editar cualquier ruta o generar las rutas de hoteles de Punta Cana con precios orientativos en USD. Las nuevas rutas se guardan activas y con una tarifa inicial estimada; revisa y ajusta los precios antes de anunciarlos.</p>
 <div class="panel" style="background:#f8fbff;border:1px dashed #b7cce5">
 <h3 style="margin-top:0">Generar rutas de hoteles automáticamente</h3>
-<p class="muted">Un hotel por línea. Se crearán rutas Aeropuerto → hotel, hotel → Aeropuerto y hotel → hotel en ambos sentidos. Se asignarán tarifas iniciales estimadas por zona: aeropuerto US$30–60; entre hoteles US$15–35. Las rutas se guardan activas; revisa y ajusta precios antes de anunciarlos.</p>
-<div class="field"><label for="hotelRouteList">Hoteles de Punta Cana (puedes añadir o quitar nombres)</label><textarea id="hotelRouteList" rows="12" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font:inherit">Four Points by Sheraton Puntacana Village
+<p class="muted">Un hotel por línea. Se crearán rutas Aeropuerto ↔ hoteles/destinos y rutas en ambos sentidos entre cada origen y destino de la lista. Incluye Downtown, Bravo, Olé, Almacenes Unidos, plazas, playas y ocio. Tarifas iniciales estimadas por zona: aeropuerto US$30–60; trayectos locales US$15–35. Revisa y ajusta cada precio antes de anunciarlo.</p>
+<div class="field"><label for="hotelRouteList">Hoteles y destinos importantes de Punta Cana (uno por línea; puedes añadir o quitar nombres)</label><textarea id="hotelRouteList" rows="12" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font:inherit">Four Points by Sheraton Puntacana Village
 Westin Puntacana Resort & Club
 Tortuga Bay Puntacana Resort & Club
 Sanctuary Cap Cana
@@ -76,7 +76,33 @@ Grand Bavaro Princess
 Whala!bavaro
 HM Bavaro Beach
 Live Aqua Punta Cana
-Dreams Cap Cana Resort & Spa</textarea></div>
+Dreams Cap Cana Resort & Spa
+Downtown Punta Cana
+Supermercado Bravo Punta Cana
+Hipermercado Olé Bávaro
+Almacenes Unidos Punta Cana
+BlueMall Puntacana
+Puntacana Village
+San Juan Shopping Center
+Plaza San Juan
+Jumbo Bávaro
+Supermercado Nacional Punta Cana
+Aprezio Bávaro
+Plaza Bávaro
+Pueblo Bávaro
+Centro de Verón
+Coco Bongo Punta Cana
+Hard Rock Casino Punta Cana
+Marina Cap Cana
+Playa Juanillo
+Playa Bávaro
+Playa Macao
+Playa Los Corales
+Parque Ecológico Ojos Indígenas
+Bávaro Adventure Park
+Cocotal Golf & Country Club
+Plaza Turquesa
+Plaza El Dorado</textarea></div>
 <div class="photo-actions"><button class="primary" id="generateHotelRoutes">＋ Generar rutas de esta lista</button><button id="selectHotelList">Seleccionar lista</button></div>
 <p id="hotelRouteStatus" class="status"></p>
 </div><div class="workspace" style="grid-template-columns:minmax(220px,1fr) minmax(260px,1fr)"><div><h3>Rutas guardadas</h3><div class="field" style="margin-bottom:10px"><label for="transferSearch">Buscar hotel o ruta</label><input id="transferSearch" placeholder="Escribe hotel, aeropuerto o destino"></div><p class="muted" id="transferCount"></p><div id="transferList" class="list" style="max-height:500px"></div></div><div><div class="fields"><div class="field"><label for="transferOrigin">Origen</label><input id="transferOrigin" placeholder="Ej. Aeropuerto de Punta Cana"></div><div class="field"><label for="transferDestination">Destino</label><input id="transferDestination" placeholder="Ej. Bávaro"></div><div class="field"><label for="transferPrice">Precio (USD)</label><input id="transferPrice" type="number" min="0" step="0.01" placeholder="40"></div><div class="field"><label for="transferActive">Visible en la página</label><select id="transferActive"><option value="true">Sí</option><option value="false">No</option></select></div></div><div class="photo-actions" style="margin-top:18px"><button class="primary" id="saveTransfer">Guardar ruta</button><button class="danger" id="deleteTransfer">Eliminar ruta</button></div><p id="transferStatus" class="status"></p></div></div></section>
@@ -275,11 +301,11 @@ async function generateHotelRoutes(){
  const existing=new Set((transferRows||[]).map(r=>normalize(r.origen||r.origin)+'>'+normalize(r.destino||r.destination)));
  const zoneOf=name=>{
   const n=normalize(name);
-  if(/cap cana|sanctuary|eden roc|zilara|ziva cap cana|margaritaville.*cap cana|trs cap cana|dreams cap cana|four points|westin puntacana|tortuga bay|puntacana village/.test(n))return 'capcana';
-  if(/serenade|dreams flora|sunscape coco|catalonia|cabeza de toro/.test(n))return 'cabezadetoro';
-  if(/macao|zoetry agua|live aqua|excellence punta cana|finest punta cana|breathless punta cana/.test(n))return 'macao';
+  if(/cap cana|sanctuary|eden roc|zilara|ziva cap cana|margaritaville.*cap cana|trs cap cana|dreams cap cana|four points|westin puntacana|tortuga bay|puntacana village|bluemall puntacana|marina cap cana|playa juanillo|ojos indigenas/.test(n))return 'capcana';
+  if(/serenade|dreams flora|sunscape coco|catalonia|cabeza de toro|almacenes unidos|centro de veron|aprezio/.test(n))return 'cabezadetoro';
+  if(/macao|zoetry agua|live aqua|excellence punta cana|finest punta cana|breathless punta cana|playa macao/.test(n))return 'macao';
   if(/uvero|riu republica|dreams onyx/.test(n))return 'uveroalto';
-  if(/arena gorda|hard rock|bahia principe|royalton|majestic|iberostar|riu palace|riu bambu|occidental|caribe deluxe|tropical deluxe|grand bavaro princess|puntacana princess/.test(n))return 'arenagorda';
+  if(/arena gorda|hard rock|bahia principe|royalton|majestic|iberostar|riu palace|riu bambu|occidental|caribe deluxe|tropical deluxe|grand bavaro princess|puntacana princess|playa bavaro|coco bongo|bavaro adventure park|cocotal|plaza turquesa|ole bavaro|jumbo bavaro|nacional punta cana|plaza el dorado/.test(n))return 'arenagorda';
   return 'bavaro';
  };
  const airportPrice={capcana:30,cabezadetoro:35,bavaro:40,arenagorda:45,macao:50,uveroalto:60};
@@ -296,7 +322,7 @@ async function generateHotelRoutes(){
  for(let i=0;i<hotels.length;i++){for(let j=0;j<hotels.length;j++){if(i!==j)add(hotels[i],hotels[j])}}
  if(!routes.length){status.textContent='No hay rutas nuevas: las rutas de esa lista ya existen.';return}
  const count=routes.length;
- if(!confirm('Se van a crear '+count+' rutas nuevas para '+hotels.length+' hoteles. Quedarán ocultas, con precio US$0 como marcador. Tendrás que asignarles precio y activarlas manualmente. ¿Continuar?')){status.textContent='Operación cancelada.';return}
+ if(!confirm('Se van a crear '+count+' rutas nuevas para '+hotels.length+' hoteles y destinos. Quedarán activas con precios iniciales estimados por zona. Revisa y ajusta cada tarifa antes de anunciarla. ¿Continuar?')){status.textContent='Operación cancelada.';return}
  let saved=0;
  try{
   for(let i=0;i<routes.length;i+=100){
@@ -306,7 +332,7 @@ async function generateHotelRoutes(){
    saved+=batch.length;status.textContent='Guardando rutas: '+saved+' de '+count+'…';
   }
   await loadTransfers();
-  status.textContent='Listo: '+saved+' rutas creadas para '+hotels.length+' hoteles. Todas están ocultas hasta que pongas sus precios y las actives.';
+  status.textContent='Listo: '+saved+' rutas creadas para '+hotels.length+' hoteles y destinos. Están activas con precios estimados; revísalos y ajústalos antes de anunciarlos.';
  }catch(e){status.textContent='No se completó todo: '+e.message+' Puedes volver a generar; las rutas ya guardadas se omitirán.';await loadTransfers()}
 }
 $('generateHotelRoutes').onclick=generateHotelRoutes;
