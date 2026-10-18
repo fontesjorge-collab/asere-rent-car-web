@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://asererentcartransfer.netlify.app/sitemap.xml
