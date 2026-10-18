@@ -10,7 +10,7 @@
 <section id="login" class="login"><h1>ASERE</h1><p class="muted">Panel de administración</p><form id="loginForm"><label>Correo de administrador</label><input id="email" type="email" required autocomplete="username"><label>Contraseña</label><input id="password" type="password" required autocomplete="current-password"><button class="primary" style="width:100%;margin-top:18px">Entrar al panel</button></form><p id="loginStatus" class="status"></p></section>
 <div id="app"><aside class="sidebar"><div class="brand"><strong>ASERE</strong><small>RENT CAR • TOURS • TRANSFERS</small></div><button class="navbtn active" data-page="vehiculos">🚘 Vehículos</button><button class="navbtn" data-page="excursiones">🏝️ Excursiones</button><button class="navbtn" data-page="transfers">📍 Transfers</button><button class="navbtn" data-page="config">⚙️ Configuración</button><button class="navbtn logout" id="logout">↪ Cerrar sesión</button></aside>
 <main class="main"><header class="top"><div><h1 id="pageTitle">Vehículos</h1><div class="muted">Edita datos y fotos sin escribir enlaces.</div></div><span>Administrador</span></header>
-<section id="catalogPage" class="panel"><div class="panelhead"><h2 id="sectionTitle">Vehículos</h2><button class="primary" id="addRecord">＋ Agregar vehículo</button></div><div class="workspace"><div class="list" id="recordList"></div><div><img id="preview" class="preview" alt="Foto del registro"><div class="photo-actions"><button class="gold" id="choosePhoto">📷 Cambiar foto</button><button class="photo-button" id="addPhoto">＋ Agregar foto</button><button id="removePhoto" class="danger">Quitar vista previa</button></div><input id="photoInput" type="file" accept="image/*" multiple hidden><div id="thumbs" class="thumbs"></div><div class="drop">Selecciona una foto desde la galería del celular o los archivos de la computadora.<br>JPG, PNG o WEBP · Máximo 5 MB por foto</div><p id="photoStatus" class="status"></p></div><div class="editfields"><div class="fields" id="fields"></div><button class="primary" id="saveRecord" style="margin-top:18px">Guardar cambios</button><p id="saveStatus" class="status"></p></div></div></section>
+<section id="catalogPage" class="panel"><div class="panelhead"><h2 id="sectionTitle">Vehículos</h2><div class="photo-actions"><button id="syncFallback">Completar catálogo público</button><button class="primary" id="addRecord">＋ Agregar vehículo</button></div></div><div class="workspace"><div class="list" id="recordList"></div><div><img id="preview" class="preview" alt="Foto del registro"><div class="photo-actions"><button class="gold" id="choosePhoto">📷 Cambiar foto</button><button class="photo-button" id="addPhoto">＋ Agregar foto</button><button id="removePhoto" class="danger">Quitar vista previa</button></div><input id="photoInput" type="file" accept="image/*" multiple hidden><div id="thumbs" class="thumbs"></div><div class="drop">Selecciona una foto desde la galería del celular o los archivos de la computadora.<br>JPG, PNG o WEBP · Máximo 5 MB por foto</div><p id="photoStatus" class="status"></p></div><div class="editfields"><div class="fields" id="fields"></div><button class="primary" id="saveRecord" style="margin-top:18px">Guardar cambios</button><p id="saveStatus" class="status"></p></div></div></section>
 <section id="transfersPage" class="panel hidden"><div class="panelhead"><h2>Transfers</h2><button class="primary" id="reloadTransfers">Actualizar lista</button></div><p class="muted">Consulta las rutas guardadas en Supabase. La edición avanzada de rutas estará en esta sección.</p><div id="transferList"></div><p id="transferStatus" class="status"></p></section>
 <section id="configPage" class="panel hidden">
 <h2>Configuración general de la página</h2>
@@ -77,6 +77,78 @@ function keyFor(row,keys){return keys.find(k=>Object.prototype.hasOwnProperty.ca
 function nameFor(r){return r.nombre||r.name||r.modelo||r.model||r.titulo||r.id||'Registro'}
 function photoFor(r){return r.imagen_url||r.image_url||r.foto||r.photo||r.image||''}
 function setPage(p){page=p;document.querySelectorAll('.navbtn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));$('catalogPage').classList.toggle('hidden',p==='config');$('transfersPage').classList.add('hidden');$('configPage').classList.toggle('hidden',p!=='config');$('pageTitle').textContent=labels[p]||'Configuración';$('sectionTitle').textContent=labels[p]||'Catálogo';$('addRecord').textContent=p==='vehiculos'?'＋ Agregar vehículo':p==='excursiones'?'＋ Agregar excursión':'＋ Agregar ruta';if(p==='config'){loadSiteConfig();return}table=p;loadRows()}
+const fallbackVehicles=[
+ {nombre:'Kia Forte 2024',categoria:'Sedán',imagen_url:'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Ford Explorer 2020',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Jeep Wrangler Rubicon 2023',categoria:'Vehículos especiales',imagen_url:'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Seltos 2023',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Honda CR-V 2022',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Hyundai Santa Fe 2020',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Sonet 2022',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Seltos 2025',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Rio 2024',categoria:'Sedán',imagen_url:'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Cadillac Escalade 2025',categoria:'Vehículos especiales',imagen_url:'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Mercedes-Benz 2020',categoria:'Vehículos especiales',imagen_url:'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Soluto 2023',categoria:'Sedán',imagen_url:'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Hyundai Elantra 2020',categoria:'Sedán',imagen_url:'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Toyota Corolla 2020',categoria:'Sedán',imagen_url:'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Rio 2017',categoria:'Sedán',imagen_url:'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=82'},
+ {nombre:'Kia Sorento 2019',categoria:'SUV',imagen_url:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=82'}
+];
+const fallbackTours=[
+ ['Isla Saona','https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=82'],
+ ['Isla Saona VIP','https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1000&q=82'],
+ ['Dolphin Explorer','https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=82'],
+ ['Santo Domingo City Tour','https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1000&q=82'],
+ ['Xanamá Experience','https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1000&q=82'],
+ ['Buggy Punta Cana','https://images.unsplash.com/photo-1551830820-330a71b99659?auto=format&fit=crop&w=1000&q=82'],
+ ['Monkeyland','https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1000&q=82'],
+ ['Parasailing','https://images.unsplash.com/photo-1504198322253-cfa87a0ff25f?auto=format&fit=crop&w=1000&q=82'],
+ ['Party Boat','https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=82'],
+ ['Scape Park','https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=82'],
+ ['Coco Bongo','https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1000&q=82'],
+ ['Hacienda Park','https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=82'],
+ ['Scuba Doo','https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=82'],
+ ['Deep Sea Fishing','https://images.unsplash.com/photo-1540946485063-a40da27545f8?auto=format&fit=crop&w=1000&q=82'],
+ ['El Dorado Water Park','https://images.unsplash.com/photo-1560089000-7433a4ebbd64?auto=format&fit=crop&w=1000&q=82'],
+ ['Secret River','https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=82'],
+ ['Adventure Park','https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1000&q=82']
+];
+function normalizeKey(v){return String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
+async function syncFallbackCatalog(){
+ if(page!=='vehiculos'&&page!=='excursiones')return;
+ const targetTable=page;
+ const {data,error}=await client.from(targetTable).select('*');
+ if(error){msg('saveStatus','No se pudo revisar el catálogo: '+error.message);return}
+ const current=data||[];
+ const nameOf=r=>r.nombre||r.name||r.modelo||r.model||r.titulo||'';
+ const yearOf=r=>r.anio||r.ano||r.año||r.year||'';
+ const keyOf=r=>normalizeKey(nameOf(r)+' '+yearOf(r));
+ const currentKeys=new Set(current.map(keyOf));
+ let added=0,skipped=0;
+ try{
+  if(targetTable==='vehiculos'){
+   for(const v of fallbackVehicles){
+    const key=normalizeKey(v.nombre);
+    if(currentKeys.has(key)||current.some(r=>normalizeKey(nameOf(r)+' '+yearOf(r))===key)){skipped++;continue}
+    const {error:insertError}=await client.from('vehiculos').insert({...v,descripcion:'Foto referencial. Confirma disponibilidad y detalles por WhatsApp.',activo:true});
+    if(insertError)throw insertError;
+    currentKeys.add(key);added++;
+   }
+  }else{
+   for(const [nombre,imagen_url] of fallbackTours){
+    const key=normalizeKey(nombre);
+    if(current.some(r=>normalizeKey(nameOf(r))===key)){skipped++;continue}
+    const {error:insertError}=await client.from('excursiones').insert({nombre,imagen_url,descripcion:'Consulta disponibilidad, precio y detalles por WhatsApp.',activo:true});
+    if(insertError)throw insertError;
+    added++;
+   }
+  }
+  msg('saveStatus','Catálogo completado: '+added+' registro(s) agregados; '+skipped+' ya existían.');
+  await loadRows();
+ }catch(e){msg('saveStatus','La importación se detuvo: '+(e.message||String(e))+' . Se conservaron los registros que ya se habían guardado.')}
+}
+$('syncFallback').onclick=syncFallbackCatalog;
 async function loadRows(){msg('saveStatus','Cargando catálogo…');$('recordList').innerHTML='';$('fields').innerHTML='';rows=[];selected=-1;files=[];$('thumbs').innerHTML='';$('photoInput').value='';const {data,error}=await client.from(table).select('*');if(error){msg('saveStatus','Error al cargar '+table+': '+error.message);return}rows=data||[];renderList();if(rows.length)selectRow(0);else{msg('saveStatus','No hay registros. Pulsa Agregar para crear uno.');renderFields({})}}
 function renderList(){const list=$('recordList');list.innerHTML='';rows.forEach((r,i)=>{const d=document.createElement('div');d.className='item'+(i===selected?' active':'');const im=document.createElement('img');im.src=photoFor(r)||'';im.alt='';const txt=document.createElement('div'),b=document.createElement('b'),sm=document.createElement('small');b.textContent=nameFor(r);sm.textContent=r.categoria||r.category||r.tipo||'';txt.append(b,sm);d.append(im,txt);d.onclick=()=>selectRow(i);list.append(d)})}
 function selectRow(i){selected=i;files=[];$('photoInput').value='';$('thumbs').innerHTML='';const r=rows[i]||{};$('preview').src=photoFor(r)||'';renderList();renderFields(r);msg('photoStatus','');msg('saveStatus','')}
