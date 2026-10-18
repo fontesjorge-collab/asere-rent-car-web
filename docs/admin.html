@@ -11,7 +11,75 @@
 <div id="app"><aside class="sidebar"><div class="brand"><strong>ASERE</strong><small>RENT CAR & TRANSFER EXCURSIONS</small></div><button class="navbtn active" data-page="vehiculos">🚘 Vehículos</button><button class="navbtn" data-page="excursiones">🏝️ Excursiones</button><button class="navbtn" data-page="transfers">📍 Transfers</button><button class="navbtn" data-page="config">⚙️ Configuración</button><button class="navbtn logout" id="logout">↪ Cerrar sesión</button></aside>
 <main class="main"><header class="top"><div><h1 id="pageTitle">Vehículos</h1><div class="muted">Edita datos y fotos sin escribir enlaces.</div></div><span>Administrador</span></header>
 <section id="catalogPage" class="panel"><div class="panelhead"><h2 id="sectionTitle">Vehículos</h2><div class="photo-actions"><button id="syncFallback">Completar catálogo público</button><button class="primary" id="addRecord">＋ Agregar vehículo</button></div></div><div class="workspace"><div class="list" id="recordList"></div><div><img id="preview" class="preview" alt="Foto del registro"><div class="photo-actions"><button class="gold" id="choosePhoto">📷 Cambiar foto</button><button class="photo-button" id="addPhoto">＋ Agregar foto</button><button id="removePhoto" class="danger">Quitar vista previa</button></div><input id="photoInput" type="file" accept="image/*" multiple hidden><div id="thumbs" class="thumbs"></div><div class="drop">Selecciona una foto desde la galería del celular o los archivos de la computadora.<br>JPG, PNG o WEBP · Máximo 5 MB por foto</div><p id="photoStatus" class="status"></p></div><div class="editfields"><div class="fields" id="fields"></div><div class="photo-actions" style="margin-top:18px"><button class="primary" id="saveRecord">Guardar cambios</button><button class="danger" id="deleteRecord" type="button">🗑️ Eliminar vehículo</button></div><p id="saveStatus" class="status"></p></div></div></section>
-<section id="transfersPage" class="panel hidden"><div class="panelhead"><h2>Rutas y precios de transfers</h2><div class="photo-actions"><button id="newTransfer">＋ Agregar ruta</button><button class="primary" id="reloadTransfers">Actualizar lista</button></div></div><p class="muted">Aquí solo se editan origen, destino, precio y visibilidad de las rutas. Las fotos de vehículos y excursiones no aparecen en esta sección.</p><div class="workspace" style="grid-template-columns:minmax(220px,1fr) minmax(260px,1fr)"><div><h3>Rutas guardadas</h3><div id="transferList" class="list" style="max-height:500px"></div></div><div><div class="fields"><div class="field"><label for="transferOrigin">Origen</label><input id="transferOrigin" placeholder="Ej. Aeropuerto de Punta Cana"></div><div class="field"><label for="transferDestination">Destino</label><input id="transferDestination" placeholder="Ej. Bávaro"></div><div class="field"><label for="transferPrice">Precio (USD)</label><input id="transferPrice" type="number" min="0" step="0.01" placeholder="40"></div><div class="field"><label for="transferActive">Visible en la página</label><select id="transferActive"><option value="true">Sí</option><option value="false">No</option></select></div></div><div class="photo-actions" style="margin-top:18px"><button class="primary" id="saveTransfer">Guardar ruta</button><button class="danger" id="deleteTransfer">Eliminar ruta</button></div><p id="transferStatus" class="status"></p></div></div></section>
+<section id="transfersPage" class="panel hidden"><div class="panelhead"><h2>Rutas y precios de transfers</h2><div class="photo-actions"><button id="newTransfer">＋ Agregar ruta</button><button class="primary" id="reloadTransfers">Actualizar lista</button></div></div><p class="muted">Aquí puedes editar precios manualmente o generar una base de rutas de hoteles de Punta Cana. Las rutas generadas quedan ocultas hasta que les pongas precio y las actives.</p>
+<div class="panel" style="background:#f8fbff;border:1px dashed #b7cce5">
+<h3 style="margin-top:0">Generar rutas de hoteles automáticamente</h3>
+<p class="muted">Un hotel por línea. Se crearán rutas Aeropuerto → hotel, hotel → Aeropuerto y hotel → hotel en ambos sentidos. Las rutas nuevas quedarán inactivas y con US$0 como marcador para que tú pongas los precios antes de publicarlas.</p>
+<div class="field"><label for="hotelRouteList">Hoteles de Punta Cana (puedes añadir o quitar nombres)</label><textarea id="hotelRouteList" rows="12" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font:inherit">Four Points by Sheraton Puntacana Village
+Westin Puntacana Resort & Club
+Tortuga Bay Puntacana Resort & Club
+Sanctuary Cap Cana
+Eden Roc Cap Cana
+Secrets Cap Cana Resort & Spa
+Hyatt Zilara Cap Cana
+Hyatt Ziva Cap Cana
+TRS Cap Cana Waterfront & Marina Hotel
+Margaritaville Island Reserve Cap Cana
+Serenade Punta Cana Beach & Spa Resort
+Dreams Flora Resort & Spa
+Sunscape Coco Punta Cana
+Barceló Bávaro Palace
+Barceló Bávaro Beach
+Lopesan Costa Bávaro Resort Spa & Casino
+Melia Punta Cana Beach
+Melia Caribe Beach Resort
+Paradisus Palma Real Golf & Spa Resort
+Falcon's Resort by Melia
+Secrets Royal Beach Punta Cana
+Dreams Royal Beach Punta Cana
+Hard Rock Hotel & Casino Punta Cana
+Royalton Bavaro Resort & Spa
+Royalton Splash Punta Cana
+Majestic Colonial Punta Cana
+Majestic Elegance Punta Cana
+Majestic Mirage Punta Cana
+Riu Palace Bavaro
+Riu Palace Punta Cana
+Riu Bambu
+Riu Republica
+Bahia Principe Luxury Ambar
+Bahia Principe Fantasia Punta Cana
+Bahia Principe Grand Punta Cana
+Grand Palladium Punta Cana Resort & Spa
+Grand Palladium Palace Resort Spa & Casino
+Grand Palladium Bavaro Suites Resort & Spa
+TRS Turquesa Hotel
+Iberostar Selection Bavaro Suites
+Iberostar Grand Bavaro
+Iberostar Waves Dominicana
+Iberostar Waves Punta Cana
+Dreams Macao Beach Punta Cana
+Dreams Onyx Resort & Spa
+Breathless Punta Cana Resort & Spa
+Excellence Punta Cana
+Finest Punta Cana
+Zoetry Agua Punta Cana
+Catalonia Bavaro Beach Golf & Casino Resort
+Catalonia Royal Bavaro
+Occidental Punta Cana
+Impressive Punta Cana
+Vista Sol Punta Cana Beach Resort & Spa
+Caribe Deluxe Princess
+Tropical Deluxe Princess
+Punta Cana Princess
+Grand Bavaro Princess
+Whala!bavaro
+HM Bavaro Beach
+Live Aqua Punta Cana
+Dreams Cap Cana Resort & Spa</textarea></div>
+<div class="photo-actions"><button class="primary" id="generateHotelRoutes">＋ Generar rutas de esta lista</button><button id="selectHotelList">Seleccionar lista</button></div>
+<p id="hotelRouteStatus" class="status"></p>
+</div><div class="workspace" style="grid-template-columns:minmax(220px,1fr) minmax(260px,1fr)"><div><h3>Rutas guardadas</h3><div id="transferList" class="list" style="max-height:500px"></div></div><div><div class="fields"><div class="field"><label for="transferOrigin">Origen</label><input id="transferOrigin" placeholder="Ej. Aeropuerto de Punta Cana"></div><div class="field"><label for="transferDestination">Destino</label><input id="transferDestination" placeholder="Ej. Bávaro"></div><div class="field"><label for="transferPrice">Precio (USD)</label><input id="transferPrice" type="number" min="0" step="0.01" placeholder="40"></div><div class="field"><label for="transferActive">Visible en la página</label><select id="transferActive"><option value="true">Sí</option><option value="false">No</option></select></div></div><div class="photo-actions" style="margin-top:18px"><button class="primary" id="saveTransfer">Guardar ruta</button><button class="danger" id="deleteTransfer">Eliminar ruta</button></div><p id="transferStatus" class="status"></p></div></div></section>
 <section id="configPage" class="panel hidden">
 <h2>Configuración general de la página</h2>
 <p class="muted">Estos ajustes se guardan en Supabase y la página pública los utiliza. Los vehículos, excursiones y rutas se editan en sus secciones.</p>
@@ -197,6 +265,35 @@ function renderTransferList(){const el=$('transferList');el.innerHTML='';transfe
 function clearTransferForm(){selectedTransfer=-1;$('transferOrigin').value='';$('transferDestination').value='';$('transferPrice').value='';$('transferActive').value='true';renderTransferList();$('deleteTransfer').style.display='none'}
 function selectTransfer(i){selectedTransfer=i;const r=transferRows[i]||{};$('transferOrigin').value=r.origen??r.origin??'';$('transferDestination').value=r.destino??r.destination??'';$('transferPrice').value=r.precio??r.price??'';$('transferActive').value=String(r.activo!==false&&r.active!==false);$('deleteTransfer').style.display=r.__new?'none':'';renderTransferList();msg('transferStatus','Ruta seleccionada. Edita los campos y pulsa Guardar ruta.')}
 async function loadTransfers(){msg('transferStatus','Cargando rutas…');$('transferList').innerHTML='';const {data,error}=await client.from('transfers').select('*');if(error){msg('transferStatus','Error al cargar rutas: '+error.message);return}transferRows=data||[];selectedTransfer=-1;renderTransferList();if(transferRows.length){selectTransfer(0);msg('transferStatus',transferRows.length+' ruta(s) encontradas.')}else{clearTransferForm();msg('transferStatus','No hay rutas guardadas. Pulsa Agregar ruta para crear una.')}} 
+async function generateHotelRoutes(){
+ const status=$('hotelRouteStatus');status.textContent='Preparando rutas…';
+ const hotels=[...new Set($('hotelRouteList').value.split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean))];
+ if(hotels.length<2){status.textContent='Añade al menos dos hoteles, uno por línea.';return}
+ if(hotels.length>120){status.textContent='Para evitar crear miles de rutas por error, el máximo por generación es 120 hoteles. Puedes generar por grupos.';return}
+ const airport='Aeropuerto de Punta Cana';
+ const normalize=x=>String(x||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+ const existing=new Set((transferRows||[]).map(r=>normalize(r.origen||r.origin)+'>'+normalize(r.destino||r.destination)));
+ const routes=[];
+ function add(o,d){const k=normalize(o)+'>'+normalize(d);if(o!==d&&!existing.has(k)){existing.add(k);routes.push({origen:o,destino:d,precio:0,activo:false})}}
+ for(const h of hotels){add(airport,h);add(h,airport)}
+ for(let i=0;i<hotels.length;i++){for(let j=0;j<hotels.length;j++){if(i!==j)add(hotels[i],hotels[j])}}
+ if(!routes.length){status.textContent='No hay rutas nuevas: las rutas de esa lista ya existen.';return}
+ const count=routes.length;
+ if(!confirm('Se van a crear '+count+' rutas nuevas para '+hotels.length+' hoteles. Quedarán ocultas, con precio US$0 como marcador. Tendrás que asignarles precio y activarlas manualmente. ¿Continuar?')){status.textContent='Operación cancelada.';return}
+ let saved=0;
+ try{
+  for(let i=0;i<routes.length;i+=100){
+   const batch=routes.slice(i,i+100);
+   const {error}=await client.from('transfers').insert(batch);
+   if(error)throw new Error('Se guardaron '+saved+' de '+count+' rutas antes del error: '+error.message);
+   saved+=batch.length;status.textContent='Guardando rutas: '+saved+' de '+count+'…';
+  }
+  await loadTransfers();
+  status.textContent='Listo: '+saved+' rutas creadas para '+hotels.length+' hoteles. Todas están ocultas hasta que pongas sus precios y las actives.';
+ }catch(e){status.textContent='No se completó todo: '+e.message+' Puedes volver a generar; las rutas ya guardadas se omitirán.';await loadTransfers()}
+}
+$('generateHotelRoutes').onclick=generateHotelRoutes;
+$('selectHotelList').onclick=()=>{$('hotelRouteList').focus();$('hotelRouteList').select()};
 $('newTransfer').onclick=()=>{const r={__new:true};transferRows.push(r);selectTransfer(transferRows.length-1);$('transferOrigin').focus();msg('transferStatus','Completa origen, destino y precio; luego pulsa Guardar ruta.')};
 $('saveTransfer').onclick=async()=>{const origen=$('transferOrigin').value.trim(),destino=$('transferDestination').value.trim(),rawPrice=$('transferPrice').value,activo=$('transferActive').value==='true';if(!origen||!destino){msg('transferStatus','Escribe el origen y el destino de la ruta.');return}if(rawPrice===''||!Number.isFinite(Number(rawPrice))||Number(rawPrice)<0){msg('transferStatus','Escribe un precio válido igual o mayor que cero.');return}const payload={origen,destino,precio:Number(rawPrice),activo};const current=transferRows[selectedTransfer];if(!current){msg('transferStatus','Selecciona una ruta o pulsa Agregar ruta.');return}msg('transferStatus','Guardando ruta…');try{if(current.__new){const {data,error}=await client.from('transfers').insert(payload).select('*').single();if(error)throw error;transferRows[selectedTransfer]=data;transferRows=transferRows.filter(r=>!r.__new);selectedTransfer=transferRows.findIndex(r=>r===data);if(selectedTransfer<0){await loadTransfers();return}}else{const idKey=keyFor(current,['id','uuid','transfer_id']);let query=client.from('transfers').update(payload);if(idKey)query=query.eq(idKey,current[idKey]);else query=query.eq(keyFor(current,['origen','origin']),current.origen??current.origin).eq(keyFor(current,['destino','destination']),current.destino??current.destination);const {data,error}=await query.select('*').maybeSingle();if(error)throw error;if(!data)throw new Error('No se actualizó ninguna ruta. Revisa los permisos UPDATE de la tabla transfers en Supabase.');transferRows[selectedTransfer]=data}renderTransferList();msg('transferStatus','Ruta guardada correctamente. Recarga la página pública para comprobarla.')}catch(e){msg('transferStatus','No se pudo guardar la ruta: '+(e.message||String(e)))}};
 $('deleteTransfer').onclick=async()=>{const r=transferRows[selectedTransfer];if(!r||r.__new){msg('transferStatus','Selecciona una ruta guardada para eliminar.');return}if(!confirm('¿Seguro que quieres eliminar la ruta '+(r.origen||r.origin)+' → '+(r.destino||r.destination)+'?'))return;const idKey=keyFor(r,['id','uuid','transfer_id']);msg('transferStatus','Eliminando ruta…');try{let query=client.from('transfers').delete();if(idKey)query=query.eq(idKey,r[idKey]);else query=query.eq(keyFor(r,['origen','origin']),r.origen??r.origin).eq(keyFor(r,['destino','destination']),r.destino??r.destination);const {data,error}=await query.select('*');if(error)throw error;if(!data||!data.length)throw new Error('Supabase no confirmó la eliminación. Revisa los permisos DELETE de la tabla transfers.');await loadTransfers();msg('transferStatus','Ruta eliminada correctamente.')}catch(e){msg('transferStatus','No se pudo eliminar la ruta: '+(e.message||String(e)))}};
