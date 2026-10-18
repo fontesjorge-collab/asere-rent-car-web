@@ -12,7 +12,21 @@
 <main class="main"><header class="top"><div><h1 id="pageTitle">Vehículos</h1><div class="muted">Edita datos y fotos sin escribir enlaces.</div></div><span>Administrador</span></header>
 <section id="catalogPage" class="panel"><div class="panelhead"><h2 id="sectionTitle">Vehículos</h2><button class="primary" id="addRecord">＋ Agregar vehículo</button></div><div class="workspace"><div class="list" id="recordList"></div><div><img id="preview" class="preview" alt="Foto del registro"><div class="photo-actions"><button class="gold" id="choosePhoto">📷 Cambiar foto</button><button class="photo-button" id="addPhoto">＋ Agregar foto</button><button id="removePhoto" class="danger">Quitar vista previa</button></div><input id="photoInput" type="file" accept="image/*" multiple hidden><div id="thumbs" class="thumbs"></div><div class="drop">Selecciona una foto desde la galería del celular o los archivos de la computadora.<br>JPG, PNG o WEBP · Máximo 5 MB por foto</div><p id="photoStatus" class="status"></p></div><div class="editfields"><div class="fields" id="fields"></div><button class="primary" id="saveRecord" style="margin-top:18px">Guardar cambios</button><p id="saveStatus" class="status"></p></div></div></section>
 <section id="transfersPage" class="panel hidden"><div class="panelhead"><h2>Transfers</h2><button class="primary" id="reloadTransfers">Actualizar lista</button></div><p class="muted">Consulta las rutas guardadas en Supabase. La edición avanzada de rutas estará en esta sección.</p><div id="transferList"></div><p id="transferStatus" class="status"></p></section>
-<section id="configPage" class="panel hidden"><h2>Configuración</h2><p>El panel usa tu proyecto actual de Supabase y conserva los catálogos existentes.</p><p id="configStatus" class="status"></p></section>
+<section id="configPage" class="panel hidden">
+<h2>Configuración general de la página</h2>
+<p class="muted">Estos ajustes se guardan en Supabase y la página pública los utiliza. Los vehículos, excursiones y rutas se editan en sus secciones.</p>
+<div class="fields">
+<div class="field"><label for="configWhatsapp">WhatsApp de reservas (con código de país)</label><input id="configWhatsapp" inputmode="numeric" placeholder="18293517721"></div>
+<div class="field full"><label for="configCategories">Categorías de vehículos (una por línea, máximo 3)</label><textarea id="configCategories" rows="3" placeholder="Sedán&#10;SUV&#10;Vehículos especiales"></textarea></div>
+<div class="field"><label for="configSedanPrice">Precio base Sedán por día (USD)</label><input id="configSedanPrice" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="configSuvPrice">Precio base SUV por día (USD)</label><input id="configSuvPrice" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="configDeposit">Depósito de renta (USD)</label><input id="configDeposit" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="configDriverHourly">Chofer por hora (USD)</label><input id="configDriverHourly" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="configDriverDaily">Chofer por día (USD)</label><input id="configDriverDaily" type="number" min="0" step="0.01"></div>
+</div>
+<div class="photo-actions"><button class="primary" id="saveConfig">Guardar configuración</button><button id="reloadConfig">Recargar valores guardados</button></div>
+<p id="configStatus" class="status"></p>
+</section>
 <footer class="footer">ASERE Rent Car • Tours • Transfers · Panel privado</footer></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 (function(){
@@ -20,10 +34,49 @@ const URL='https://euuhtluvcdmeltwrlbeo.supabase.co',KEY='sb_publishable_qYp_nc1
 const $=id=>document.getElementById(id);let client=null,table='vehiculos',rows=[],selected=-1,files=[],page='vehiculos';
 const labels={vehiculos:'Vehículos',excursiones:'Excursiones',transfers:'Transfers'};
 function msg(id,t){$(id).textContent=t||''}
+async function loadSiteConfig(){
+ msg('configStatus','Cargando ajustes guardados…');
+ const {data,error}=await client.from('asere_configuracion').select('config').eq('id','principal').maybeSingle();
+ if(error){msg('configStatus','No se pudieron cargar los ajustes: '+error.message);return}
+ let c=data&&data.config?data.config:{};
+ if(typeof c==='string'){try{c=JSON.parse(c)}catch(e){c={}}}
+ $('configWhatsapp').value=c.whatsapp||c.whatsappNumber||c.telefonoWhatsApp||c.telefono_whatsapp||'18293517721';
+ $('configCategories').value=(Array.isArray(c.vehicleCategories)&&c.vehicleCategories.length?c.vehicleCategories:['Sedán','SUV','Vehículos especiales']).map(v=>typeof v==='string'?v:(v.name||v.nombre||v.category||'')).filter(Boolean).join('\n');
+ const prices=c.precios||c.prices||{};
+ $('configSedanPrice').value=prices.sedan??prices['Sedán']??45;
+ $('configSuvPrice').value=prices.suv??prices.SUV??80;
+ $('configDeposit').value=prices.deposito??prices.deposit??200;
+ $('configDriverHourly').value=prices.driverHourly??prices.driver_hourly??10;
+ $('configDriverDaily').value=prices.driverDaily??prices.driver_daily??80;
+ msg('configStatus','Ajustes cargados. Recuerda guardar los cambios.');
+}
+async function saveSiteConfig(){
+ msg('configStatus','Guardando configuración…');
+ const {data,error}=await client.from('asere_configuracion').select('config').eq('id','principal').maybeSingle();
+ if(error){msg('configStatus','No se pudieron leer los ajustes actuales: '+error.message);return}
+ let c=data&&data.config?data.config:{};
+ if(typeof c==='string'){try{c=JSON.parse(c)}catch(e){c={}}}
+ const categories=$('configCategories').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,3);
+ if(!categories.length){msg('configStatus','Escribe al menos una categoría de vehículo.');return}
+ const whatsapp=$('configWhatsapp').value.replace(/\D/g,'');
+ if(whatsapp.length<10){msg('configStatus','Escribe el WhatsApp con código de país, solo números.');return}
+ const prices={...(c.precios||c.prices||{})};
+ prices.sedan=Number($('configSedanPrice').value||0);
+ prices.suv=Number($('configSuvPrice').value||0);
+ prices.deposito=Number($('configDeposit').value||0);
+ prices.driverHourly=Number($('configDriverHourly').value||0);
+ prices.driverDaily=Number($('configDriverDaily').value||0);
+ c.whatsapp=whatsapp;c.vehicleCategories=categories;c.precios=prices;
+ const {error:saveError}=await client.from('asere_configuracion').upsert({id:'principal',config:c,actualizado_en:new Date().toISOString()},{onConflict:'id'});
+ if(saveError){msg('configStatus','No se pudo guardar: '+saveError.message);return}
+ msg('configStatus','Configuración guardada. Recarga la página pública para comprobar los cambios.');
+}
+$('saveConfig').onclick=saveSiteConfig;
+$('reloadConfig').onclick=loadSiteConfig;
 function keyFor(row,keys){return keys.find(k=>Object.prototype.hasOwnProperty.call(row,k))}
 function nameFor(r){return r.nombre||r.name||r.modelo||r.model||r.titulo||r.id||'Registro'}
 function photoFor(r){return r.imagen_url||r.image_url||r.foto||r.photo||r.image||''}
-function setPage(p){page=p;document.querySelectorAll('.navbtn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));$('catalogPage').classList.toggle('hidden',p==='config');$('transfersPage').classList.add('hidden');$('configPage').classList.toggle('hidden',p!=='config');$('pageTitle').textContent=labels[p]||'Configuración';$('sectionTitle').textContent=labels[p]||'Catálogo';$('addRecord').textContent=p==='vehiculos'?'＋ Agregar vehículo':p==='excursiones'?'＋ Agregar excursión':'＋ Agregar ruta';if(p==='config'){msg('configStatus','Conectado al proyecto Supabase: '+URL);return}table=p;loadRows()}
+function setPage(p){page=p;document.querySelectorAll('.navbtn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));$('catalogPage').classList.toggle('hidden',p==='config');$('transfersPage').classList.add('hidden');$('configPage').classList.toggle('hidden',p!=='config');$('pageTitle').textContent=labels[p]||'Configuración';$('sectionTitle').textContent=labels[p]||'Catálogo';$('addRecord').textContent=p==='vehiculos'?'＋ Agregar vehículo':p==='excursiones'?'＋ Agregar excursión':'＋ Agregar ruta';if(p==='config'){loadSiteConfig();return}table=p;loadRows()}
 async function loadRows(){msg('saveStatus','Cargando catálogo…');$('recordList').innerHTML='';$('fields').innerHTML='';rows=[];selected=-1;files=[];$('thumbs').innerHTML='';$('photoInput').value='';const {data,error}=await client.from(table).select('*');if(error){msg('saveStatus','Error al cargar '+table+': '+error.message);return}rows=data||[];renderList();if(rows.length)selectRow(0);else{msg('saveStatus','No hay registros. Pulsa Agregar para crear uno.');renderFields({})}}
 function renderList(){const list=$('recordList');list.innerHTML='';rows.forEach((r,i)=>{const d=document.createElement('div');d.className='item'+(i===selected?' active':'');const im=document.createElement('img');im.src=photoFor(r)||'';im.alt='';const txt=document.createElement('div'),b=document.createElement('b'),sm=document.createElement('small');b.textContent=nameFor(r);sm.textContent=r.categoria||r.category||r.tipo||'';txt.append(b,sm);d.append(im,txt);d.onclick=()=>selectRow(i);list.append(d)})}
 function selectRow(i){selected=i;files=[];$('photoInput').value='';$('thumbs').innerHTML='';const r=rows[i]||{};$('preview').src=photoFor(r)||'';renderList();renderFields(r);msg('photoStatus','');msg('saveStatus','')}
