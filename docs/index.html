@@ -316,6 +316,7 @@ function applyPublicPageEdits(){
   showView('home');
   updateTransferFields();
   loadConfig().then(()=>{
+    updateTransferFields();
     categories();
     updateCarSummary();
     applyPublicPageEdits();
